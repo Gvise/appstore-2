@@ -7,11 +7,17 @@ class Data {
     }
 
     public function get($key) {
-        return isset($this->data[$key]) ? htmlspecialchars(urldecode($this->data[$key])) : '';
+        if(is_string($this->data[$key])) {
+            return isset($this->data[$key]) ? htmlspecialchars(urldecode($this->data[$key])) : '';
+        }
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     public function nget($key) {
-        return isset($this->data[$key]) ? urldecode($this->data[$key]) : '';
+        if(is_string($this->data[$key])) {
+            return isset($this->data[$key]) ? urldecode($this->data[$key]) : '';
+        }
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     public function set($key, $value = '') {

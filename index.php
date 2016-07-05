@@ -9,6 +9,7 @@ Classloader::load(require __DEPENDENCIES__.'classmap.php');
 Config::load(require __DEPENDENCIES__.'config.php');
 
 App::setInstance(new Router([], Config::get('basepath')));
+DB::setInstance(new Database(Config::get('db')));
 
 require __APP__.'routes.php';
 

@@ -9,8 +9,16 @@
 //	''   => '[^/\.]++'
 
 App::map('GET', 'index', function() {
+	$rows = DB::raw('select * from table1');
+	// DB::raw('insert into table1(name) values(?)', ['ch'], function($count, $stmt) {
+	// 	if($count) {
+	// 		echo 'Success';
+	// 	} else {
+	// 		echo 'Failure';
+	// 	}
+	// });
 	View::render('index', [
-        'row' => 'hihi'
+        'rows' => $rows
     ]);
 }, 'indexPage');
 

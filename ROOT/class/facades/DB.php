@@ -1,5 +1,5 @@
 <?php
-class App {
+class DB {
     protected static $instance;
     public static function __callStatic($method, $args)
     {

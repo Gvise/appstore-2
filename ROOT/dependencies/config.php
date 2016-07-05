@@ -4,7 +4,7 @@ return [
     'views' => __ROOT__.'templates/',
     'db' => [
         'host' => 'localhost',
-        'db' => 'appstore',
+        'db' => 'test',
         'user' => 'root',
         'password' => ''
     ]
