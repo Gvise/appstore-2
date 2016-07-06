@@ -9,17 +9,19 @@
 //	''   => '[^/\.]++'
 
 App::map('GET', 'select', function() {
-	$rows = DB::raw('select * from '. Config::get('db.table'));
+	$table = Config::get('db.table');
+	$rows = DB::raw("select * from $table where id = ? and name = ?", [3,'chan']);
 	print_r($rows);
-}, 'get');
+}, 'select');
 
-App::map('GET', 'insert/[:name]', function($name) {
-	DB::raw('insert into ' . Config::get('db.table') . '(name) values(?)', [$name], function($count, $stmt) {
-		if($count) {
-			echo 'Successful!';
-		}
-		else {
-			echo 'Failure';
-		}
-	});
+App::map('GET', 'insert/[:name]', 'DBController@insert', 'insert');
+
+App::map('GET', 'user', function() {
+	View::render('user');
+});
+
+App::map('POST', 'user', function() {
+	echo $_POST['name'];
+	echo "<br>";
+	echo $_POST['age'];
 });
