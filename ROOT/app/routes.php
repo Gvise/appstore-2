@@ -15,6 +15,9 @@ App::map('GET', 'select', function() {
 }, 'select');
 
 App::map('GET', 'insert/[:name]', 'DBController@insert', 'insert');
+App::map('GET', 'request' , function() {
+
+});
 
 App::map('GET', 'user', function() {
 	View::render('user');
