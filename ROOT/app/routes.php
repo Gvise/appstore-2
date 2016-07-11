@@ -15,8 +15,12 @@ App::map('GET', 'select', function() {
 }, 'select');
 
 App::map('GET', 'insert/[:name]', 'DBController@insert', 'insert');
-App::map('GET', 'request' , function() {
-
+App::map('GET', 'encryption' , function() {
+	echo Encryption::hash('chan', Config::get('security.salt')) . "<br>";
+	$encrypted =  Encryption::make(json_encode(['a','b']), Config::get('security.enckey'));
+	$decrypted =  Encryption::decrypt($encrypted, Config::get('security.enckey'));
+	echo $encrypted . "<br>";
+	echo $decrypted;
 });
 
 App::map('GET', 'user', function() {

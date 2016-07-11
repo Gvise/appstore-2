@@ -1,4 +1,5 @@
 <?php
+session_start();
 define('__ROOT__','./ROOT/' );
 define('__APP__','./ROOT/app/');
 define('__DEPENDENCIES__', './ROOT/dependencies/');

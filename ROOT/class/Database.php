@@ -15,7 +15,7 @@ class Database {
         return $this->pdo;
     }
 
-    public function raw($query, array $bindings = Array(), $callable = null) {
+    public function query($query, array $bindings = Array(), $callable = null) {
         $stmt = $this->connection()->prepare($query);
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         $stmt->execute($bindings);
