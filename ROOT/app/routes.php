@@ -8,6 +8,10 @@
 //	'**' => '.++',
 //	''   => '[^/\.]++'
 
+App::map('GET', '/', function() {
+	View::render('home');
+});
+
 App::map('GET', 'select', function() {
 	$table = 'table1';
 	$rows = DB::raw("select * from $table where id = ? and name = ?", [3,'chan']);

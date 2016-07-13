@@ -1,5 +1,6 @@
 <?php
 return [
+    'title' => 'AppStore',
     'basepath' => 'appstore/',
     'views' => __ROOT__.'templates/',
     'db' => [
