@@ -1,95 +1,50 @@
 <?php
-//	App::map(method, url, method, name);
-//  eg url - /[:name]/[i:age]
-//	'i'  => '[0-9]++',
-//	'a'  => '[0-9A-Za-z]++',
-//	'h'  => '[0-9A-Fa-f]++',
-//	'*'  => '.+?',
-//	'**' => '.++',
-//	''   => '[^/\.]++'
-
-App::map('GET', '/', function() {
-	App::redirect('home');
-});
-
-App::map('GET', 'home', function() {
+function Load($subtitle, $page) {
 	// sidebar
 	$title = Config::get('title');
-	$subtitle = 'Home';
+	$subtitle = $subtitle;
 	$categories = ['a','b','c'];
 	$categoryGames = ['a','b','c'];
 
 	// navbar
-	$user = [
-		'id' => 1,
-		'name' => 'chan',
-		'type' => 1
-	];
+	$notifications = ['adsfsdfasdf'];
 
-	$notifications = [];
-	$selectHome = 'custom-active';
+	if($page == 'home') {
+		$selectHome = 'custom-active';
+	} else if($page == 'newreleases') {
+		$selectNewReleases = 'custom-active';
+	} else {
+		$currentPage = $page;
+	}
 
-	$apps = [
-		'category' => [
-			'url' => '',
-			'appcount' => 2,
-			'apps' => [
-				[
-					'name' => 'Warlings',
-					'icon' => 'warlings.webp',
-					'stars' => 5,
-					'price' => 0,
-					'url' => ''
-				],
-				[
-					'name' => 'Instagram',
-					'icon' => 'instagram.webp',
-					'stars' => 4,
-					'price' => 1000,
-					'url' => ''
-				]
-			]
-		],
-		'category1' => [
-			'url' => '',
-			'appcount' => 2,
-			'apps' => [
-				[
-					'name' => 'Warlisdfngs',
-					'icon' => 'warlings.webp',
-					'stars' => 5,
-					'price' => 0,
-					'url' => ''
-				],
-				[
-					'name' => 'df',
-					'icon' => 'instagram.webp',
-					'stars' => 4,
-					'price' => 1000,
-					'url' => ''
-				]
-			]
-		]
-	];
+	return compact('title', 'subtitle', 'categories', 'categoryGames', 'notifications', 'selectHome', 'selectNewReleases', 'currentPage');
+}
 
-	View::render('home', compact(
-		'title', 'subtitle','categories', 'categoryGames',
-		'user', 'notifications', 'selectHome',
-		'apps'
-	));
-});
-App::map('GET', 'join', function() { //Log In Error တက်ရင် loginOnly => 1 နဲ့ Redirect လုပ်ပေး
-	$title = Config::get('title');
-	$subtitle = 'Join';
-	View::render('join', compact(
-		'title', 'subtitle'
-	));
-});
+App::session('user', [
+	'id' => 1,
+	'name' => 'chan',
+	'type' => 1
+]);
 
-App::map('GET', 'recover', function() {
-	$title = Config::get('title');
-	$subtitle = 'Recover';
-	View::render('recover', compact(
-		'title', 'subtitle'
-	));
-});
+App::map('GET', '/', 'Pages@getIndex');
+App::map('GET', 'home', 'Pages@getHome');
+App::map('GET', 'newreleases','Pages@getNewReleases');
+App::map('GET', 'search', 'Pages@getSearch');
+App::map('GET', 'categories/[:id]', 'Pages@getCategories');
+
+App::map('GET', 'popular/apps', 'Pages@getPopularApps');
+App::map('GET', 'popular/games', 'Pages@getPopularGames');
+
+App::map('GET', 'myapps', 'Pages@getMyAppsPurchased');
+App::map('GET', 'myapps/purchased', 'Pages@getMyAppsPurchased');
+App::map('GET', 'myapps/published', 'Pages@getMyAppsPublished');
+
+App::map('GET', 'notifications/clear', 'Tasks@clearNotifications');
+
+App::map('GET', 'join','Auth@getJoin');
+App::map('GET', 'recover', 'Auth@getRecover');
+App::map('POST', 'recover', 'Auth@postRecover');
+App::map('GET', 'logout', 'Auth@getLogout');
+
+App::map('POST', 'login', 'Auth@postLogin');
+App::map('POST', 'register', 'Auth@postRegister');

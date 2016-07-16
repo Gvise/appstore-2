@@ -1,4 +1,4 @@
-<?php View::render('master.head', compact('title', 'subtitle')) ?>
+<?php render('master.head', compact('title', 'subtitle')) ?>
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -15,7 +15,7 @@
             </div>
             <div class="panel-body">
                 <div class="col-md-11">
-                    <form action=<?= App::url('recover') ?> class="form-inline" style="padding-left:30px;">
+                    <form action=<?= url('recover') ?> class="form-inline" style="padding-left:30px;">
                         <div class="form-group">
                             <div class="input-group">
                                 <input type="text" placeholder="email" class="form-control">
@@ -32,6 +32,9 @@
                 </div>
             </div>
         </div>
+        <div class="alert alert-success" style="margin-top:10px;margin-bottom:0;">
+            Email sent
+        </div>
         <div class="alert alert-danger" style="margin-top:10px;margin-bottom:0;">
             <ul>
                 <li>Error</li>
@@ -39,4 +42,4 @@
         </div>
     </div>
 </div>
-<?php View::render('master.foot')?>
+<?php render('master.foot')?>

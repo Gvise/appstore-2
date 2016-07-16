@@ -12,6 +12,7 @@ Config::load(require __DEPENDENCIES__.'config.php');
 App::setInstance(new Router([], Config::get('basepath')));
 DB::setInstance(new Database(Config::get('db')));
 
+require __APP__.'helpers.php';
 require __APP__.'routes.php';
 
 App::run();

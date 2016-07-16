@@ -1,43 +1,68 @@
-<?php View::render('master.head', compact('title', 'subtitle')) ?>
+<?php render('master.head', compact('title', 'subtitle')) ?>
 
-<?php View::render('master.sidebar', compact('user','title', 'categories', 'categoryGames')) ?>
-<?php View::render('master.navbar', compact('user', 'notifications', 'selectHome')) ?>
+<?php render('master.sidebar', compact('title', 'categories', 'categoryGames')) ?>
+<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
 
 <div class="contents">
     <div class="container">
         <div class="panel panel-default unround app-feed-panel">
-        <?php foreach ($apps as $key => $value): ?>
             <div class="app-feed-heading panel-heading">
-                <a href="#" class="category-name"><?=$key?></a>
-            <?php if ($value['appcount'] > 6): ?>
-                <a class="pull-right btn btn-default btn-xs unround" style="margin-right:8px" href=<?=$value['url']?> >See More</a>
-            <?php endif; ?>
+                <a href="#" class="category-name">Popular Apps</a>
+                <a class="pull-right btn btn-default btn-xs unround" style="margin-right:8px" href=<?= url('popular/apps') ?>>See More</a>
             </div>
             <div class="panel-body">
-            <?php foreach ($value['apps'] as $appkey => $appvalue): ?>
+            <?php foreach ($apps as $key => $value): ?>
                 <div class="app-card">
-                    <a href=<?=$appvalue['url']?>>
+                    <a href=<?=url('app/'.$value['id'])?>>
 
-                        <img src=<?= App::assets('assets/images/app-icons/' . $appvalue['icon']) ?> alt="..." class="img-thumbnail unround">
+                        <img src=<?= assets('assets/images/app-icons/' . $value['icon']) ?> alt="..." class="img-thumbnail unround">
                     </a>
-                    <p><a class="app-card-link" href=<?=$appvalue['url']?>><?=$appvalue['name'] ?></a></p>
+                    <p><a class="app-card-link" href=<?=url('app/'.$value['id'])?>><?=$value['name'] ?></a></p>
                     <div>
                         <div>
-                        <?php for ($i=0; $i < $appvalue['stars']; $i++): ?>
+                        <?php for ($i=0; $i < $value['stars']; $i++): ?>
                             <i class="glyphicon glyphicon-star"></i>
                         <?php endfor; ?>
-                        <?php for ($i=0; $i < 5-$appvalue['stars']; $i++): ?>
+                        <?php for ($i=0; $i < 5-$value['stars']; $i++): ?>
                             <i class="glyphicon glyphicon-star-empty"></i>
                         <?php endfor; ?>
                         </div>
-                        <a class="text-success" href=<?=$appvalue['url']?>><small><?=$appvalue['price'] == 0 ? 'Free' : $appvalue['price'].' MMK'?></small></a>
+                        <a class="text-success" href=<?=url('app/'.$value['id'])?>><small><?=$value['price'] == 0 ? 'Free' : $value['price'].' MMK'?></small></a>
                     </div>
                 </div>
             <?php endforeach; ?>
             </div>
-        <?php endforeach; ?>
+        </div>
+
+        <div class="panel panel-default unround app-feed-panel">
+            <div class="app-feed-heading panel-heading">
+                <a href="#" class="category-name">Popular Games</a>
+                <a class="pull-right btn btn-default btn-xs unround" style="margin-right:8px" href=<?= url('popular/games') ?>>See More</a>
+            </div>
+            <div class="panel-body">
+            <?php foreach ($games as $key => $value): ?>
+                <div class="app-card">
+                    <a href=<?=url('app/'.$value['id'])?>>
+
+                        <img src=<?= assets('assets/images/app-icons/' . $value['icon']) ?> alt="..." class="img-thumbnail unround">
+                    </a>
+                    <p><a class="app-card-link" href=<?=url('app/'.$value['id'])?>><?=$value['name'] ?></a></p>
+                    <div>
+                        <div>
+                        <?php for ($i=0; $i < $value['stars']; $i++): ?>
+                            <i class="glyphicon glyphicon-star"></i>
+                        <?php endfor; ?>
+                        <?php for ($i=0; $i < 5-$value['stars']; $i++): ?>
+                            <i class="glyphicon glyphicon-star-empty"></i>
+                        <?php endfor; ?>
+                        </div>
+                        <a class="text-success" href=<?=url('app/'.$value['id'])?>><small><?=$value['price'] == 0 ? 'Free' : $value['price'].' MMK'?></small></a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            </div>
         </div>
     </div>
 </div>
 
-<?php View::render('master.foot') ?>
+<?php render('master.foot') ?>

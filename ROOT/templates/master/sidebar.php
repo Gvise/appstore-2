@@ -24,10 +24,10 @@
             </a>
         </li>
 
+<?php if (session('user') != null): ?>
         <hr class="custom-divider">
-
         <li role="presentation">
-            <a href="">
+            <a href=<?= url('myapps') ?>>
                 <i class="glyphicon glyphicon-th-large"></i>
                 <b>My Apps</b>
                 <?php if(isset($myAppCount)) : ?>
@@ -64,7 +64,7 @@
         </li>
 
     <!--  allows only develover or above-->
-    <?php if ($user['type'] >= 2): ?>
+    <?php if (session('user')['type'] >= 2): ?>
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-collapse-up"></i> Withdraw</a>
         </li>
@@ -75,7 +75,7 @@
         </li>
 
         <!--  allows only admin-->
-    <?php if ($user['type'] == 3): ?>
+    <?php if (session('user')['type'] == 3): ?>
         <hr class="custom-divider">
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-user"></i> Users</a>
@@ -99,6 +99,7 @@
             <li><a href="">ျမန္မာ</a></li>
         </ul>
     </div> -->
+<?php endif ?>
 </div>
 
 <!-- Categories -->

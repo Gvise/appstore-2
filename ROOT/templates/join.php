@@ -1,4 +1,4 @@
-<?php View::render('master.head', compact('title', 'subtitle')) ?>
+<?php render('master.head', compact('title', 'subtitle')) ?>
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -25,7 +25,7 @@
             </div>
             <div class="panel-body">
                 <div class="col-md-11">
-                    <form action=<?= App::url('login') ?> class="form-horizontal" style="padding-left:40px;">
+                    <form action=<?= url('login') ?> class="form-horizontal" style="padding-left:40px;">
                         <div class="form-group">
                             <div class="input-group">
                                 <input type="text" placeholder="email" class="form-control">
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <a href=<?= App::url('recover') ?>>Forget Password ?</a>
+                            <a href=<?= url('recover') ?>>Forget Password ?</a>
                         </div>
                     </form>
                 </div>
@@ -68,7 +68,7 @@
                 <span class="text-success">Register</span>
             </div>
             <div class="panel-body">
-                <form action=<?= App::url('login') ?> class="form-horizontal">
+                <form action=<?= url('login') ?> class="form-horizontal">
                     <div class="form-group">
                         <label for="" class="control-label col-sm-4">Email</label>
                         <div class="col-sm-8">
@@ -119,4 +119,4 @@
         </div>
 <?php endif; ?>
 </div>
-<?php View::render('master.foot')?>
+<?php render('master.foot')?>
