@@ -17,7 +17,7 @@ class Database {
 
     public function query($query, array $bindings = Array(), $callable = null) {
         $stmt = $this->connection()->prepare($query);
-        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute($bindings);
 
         if(is_callable($callable)) {

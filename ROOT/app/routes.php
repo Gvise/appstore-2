@@ -9,30 +9,87 @@
 //	''   => '[^/\.]++'
 
 App::map('GET', '/', function() {
-	View::render('home');
+	App::redirect('home');
 });
 
-App::map('GET', 'select', function() {
-	$table = 'table1';
-	$rows = DB::raw("select * from $table where id = ? and name = ?", [3,'chan']);
-	print_r($rows);
-}, 'select');
+App::map('GET', 'home', function() {
+	// sidebar
+	$title = Config::get('title');
+	$subtitle = 'Home';
+	$categories = ['a','b','c'];
+	$categoryGames = ['a','b','c'];
 
-App::map('GET', 'insert/[:name]', 'DBController@insert', 'insert');
-App::map('GET', 'encryption' , function() {
-	echo Encryption::hash('chan', Config::get('security.salt')) . "<br>";
-	$encrypted =  Encryption::make(json_encode(['a','b']), Config::get('security.enckey'));
-	$decrypted =  Encryption::decrypt($encrypted, Config::get('security.enckey'));
-	echo $encrypted . "<br>";
-	echo $decrypted;
+	// navbar
+	$user = [
+		'id' => 1,
+		'name' => 'chan',
+		'type' => 1
+	];
+
+	$notifications = [];
+	$selectHome = 'custom-active';
+
+	$apps = [
+		'category' => [
+			'url' => '',
+			'appcount' => 2,
+			'apps' => [
+				[
+					'name' => 'Warlings',
+					'icon' => 'warlings.webp',
+					'stars' => 5,
+					'price' => 0,
+					'url' => ''
+				],
+				[
+					'name' => 'Instagram',
+					'icon' => 'instagram.webp',
+					'stars' => 4,
+					'price' => 1000,
+					'url' => ''
+				]
+			]
+		],
+		'category1' => [
+			'url' => '',
+			'appcount' => 2,
+			'apps' => [
+				[
+					'name' => 'Warlisdfngs',
+					'icon' => 'warlings.webp',
+					'stars' => 5,
+					'price' => 0,
+					'url' => ''
+				],
+				[
+					'name' => 'df',
+					'icon' => 'instagram.webp',
+					'stars' => 4,
+					'price' => 1000,
+					'url' => ''
+				]
+			]
+		]
+	];
+
+	View::render('home', compact(
+		'title', 'subtitle','categories', 'categoryGames',
+		'user', 'notifications', 'selectHome',
+		'apps'
+	));
+});
+App::map('GET', 'join', function() { //Log In Error တက်ရင် loginOnly => 1 နဲ့ Redirect လုပ်ပေး
+	$title = Config::get('title');
+	$subtitle = 'Join';
+	View::render('join', compact(
+		'title', 'subtitle'
+	));
 });
 
-App::map('GET', 'user', function() {
-	View::render('user');
-});
-
-App::map('POST', 'user', function() {
-	echo $_POST['name'];
-	echo "<br>";
-	echo $_POST['age'];
+App::map('GET', 'recover', function() {
+	$title = Config::get('title');
+	$subtitle = 'Recover';
+	View::render('recover', compact(
+		'title', 'subtitle'
+	));
 });

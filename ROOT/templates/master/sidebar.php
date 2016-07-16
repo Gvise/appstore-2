@@ -1,7 +1,8 @@
 <!-- Sidebar -->
+<!--  title, myAppCount, accountBalance, wishlistCount, categories, categoryGames-->
 <div class="sidebar">
     <div class="brand">
-        <a href=""><?=$data->get('title'); ?></a>
+        <a href=""><?=$title ?></a>
     </div>
 
     <ul class="nav nav-stacked sidebar-p-nav">
@@ -26,9 +27,12 @@
         <hr class="custom-divider">
 
         <li role="presentation">
-            <a>
+            <a href="">
                 <i class="glyphicon glyphicon-th-large"></i>
-                <b>My Apps</b> <span class="pull-right badge">10</span>
+                <b>My Apps</b>
+                <?php if(isset($myAppCount)) : ?>
+                <span class="pull-right badge"><?=$myAppCount?></span>
+                <?php endif; ?>
             </a>
         </li>
 
@@ -37,7 +41,9 @@
         <li role="presentation">
             <a data-toggle="collapse" href="#collapse-account">
                 <i class="glyphicon glyphicon-user"></i>
-                Account <span class="pull-right badge"><span id="balance">1000</span> MMK</span>
+                Account <span class="pull-right badge">
+                <span id="balance"><?=isset($accountBalance) ? $accountBalance : '0' ;?></span>
+                 MMK</span>
             </a>
             <ul class="nav nav-stacked collapse" id="collapse-account">
                 <li><a href="">Setting</a></li>
@@ -46,19 +52,30 @@
         <li role="presentation">
             <a>
                 <i class="glyphicon glyphicon-heart"></i>
-                Wishlist <span class="pull-right badge">10</span>
+                Wishlist
+                <?php if(isset($wishlistCount)) : ?>
+                <span class="pull-right badge"><?=$wishlistCount?></span>
+                <?php endif; ?>
             </a>
         </li>
         <hr class="custom-divider">
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-collapse-down"></i> Deposit</a>
         </li>
+
+    <!--  allows only develover or above-->
+    <?php if ($user['type'] >= 2): ?>
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-collapse-up"></i> Withdraw</a>
         </li>
+    <?php endif; ?>
+    <!--  allows only develover or above-->
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-book"></i> Logs</a>
         </li>
+
+        <!--  allows only admin-->
+    <?php if ($user['type'] == 3): ?>
         <hr class="custom-divider">
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-user"></i> Users</a>
@@ -71,64 +88,35 @@
         <li role="presentation">
             <a href=""><i class="glyphicon glyphicon-bell"></i> Notify</a>
         </li>
+    <?php endif; ?>
+        <!--  allows only admin-->
     </ul>
-    <div class="copyright dropup">
+
+    <!-- <div class="copyright dropup">
         <span>Copyright @ 2016</span>
         <button class="btn btn-xs btn-default unround"  data-toggle="dropdown">English <span class="caret"></span></button>
         <ul class="dropdown-menu unround">
             <li><a href="">ျမန္မာ</a></li>
         </ul>
-    </div>
+    </div> -->
 </div>
+
 <!-- Categories -->
 <div id="collapse-categories" style="display:none;">
     <div>
         <ul class="nav nav-stacked">
-            <li><a href="">Book and References</a></li>
-            <li><a href="">Business</a></li>
-            <li><a href="">Comic</a></li>
-            <li><a href="">Communication</a></li>
-            <li><a href="">Education</a></li>
-            <li><a href="">Entertainment</a></li>
-            <li><a href="">Finance</a></li>
-            <li><a href="">Health and Fitness</a></li>
-            <li><a href="">Libraries and Demo</a></li>
-            <li><a href="">Lifestyle</a></li>
-            <li><a href="">Music and Video</a></li>
-            <li><a href="">Medical</a></li>
-            <li><a href="">Music and Audio</a></li>
-            <li><a href="">News and Magazines</a></li>
-            <li><a href="">Personalizatoin</a></li>
-            <li><a href="">Photography</a></li>
-            <li><a href="">Productivity</a></li>
-            <li><a href="">Social</a></li>
-            <li><a href="">Sports</a></li>
-            <li><a href="">Tools</a></li>
-            <li><a href="">Transportation</a></li>
-            <li><a href="">Weather</a></li>
+            <?php foreach ($categories as $key => $value) : ?>
+            <li><a href=""><?=$value?></a></li>
+            <?php endforeach; ?>
         </ul>
     </div>
     <div>
         <p style="padding:10px;">Games</p>
         <hr class="custom-divider">
         <ul class="nav nav-stacked">
-            <li><a href="">Action</a></li>
-            <li><a href="">Adventure</a></li>
-            <li><a href="">Arcade</a></li>
-            <li><a href="">Board</a></li>
-            <li><a href="">Card</a></li>
-            <li><a href="">Casino</a></li>
-            <li><a href="">Casual</a></li>
-            <li><a href="">Educational</a></li>
-            <li><a href="">Music</a></li>
-            <li><a href="">Puzzle</a></li>
-            <li><a href="">Racing</a></li>
-            <li><a href="">Roll Playing</a></li>
-            <li><a href="">Simulaton</a></li>
-            <li><a href="">Sport</a></li>
-            <li><a href="">Strategy</a></li>
-            <li><a href="">Trivia</a></li>
-            <li><a href="">World</a></li>
+            <?php foreach ($categoryGames as $key => $value) : ?>
+            <li><a href=""><?=$value?></a></li>
+            <?php endforeach; ?>
         </ul>
     </div>
 </div>

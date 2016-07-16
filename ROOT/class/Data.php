@@ -7,14 +7,14 @@ class Data {
     }
 
     public function get($key) {
-        if(is_string($this->data[$key])) {
+        if(isset($this->data[$key]) && is_string($this->data[$key])) {
             return isset($this->data[$key]) ? htmlspecialchars(urldecode($this->data[$key])) : '';
         }
         return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     public function nget($key) {
-        if(is_string($this->data[$key])) {
+        if(isset($this->data[$key]) && is_string($this->data[$key])) {
             return isset($this->data[$key]) ? urldecode($this->data[$key]) : '';
         }
         return isset($this->data[$key]) ? $this->data[$key] : null;

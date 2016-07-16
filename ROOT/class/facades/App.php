@@ -11,6 +11,14 @@ class App {
         static::$instance = $instance;
     }
 
+    public static function assets($url) {
+        return 'http://localhost/' . Config::get('basepath') . $url;
+    }
+
+    public static function url($url) {
+        return 'http://localhost/' . Config::get('basepath') . $url;
+    }
+
     public static function redirect($url, array $with = array()) {
         if($url == '') return;
         header('Location: '. $url);
@@ -28,7 +36,7 @@ class App {
         $_COOKIE[$key] = $val;
     }
 
-    public static function session($key, $val = '') {
+    public static function session($key, $val = '`') {
         if($val == null) {
             unset($_SESSION[$key]);
         }
@@ -43,5 +51,6 @@ class App {
 			unset($_SESSION[$key]);
 			return $val;
 		}
+        return null;
     }
 }

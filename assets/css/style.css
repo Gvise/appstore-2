@@ -407,13 +407,17 @@
 }
 
 .notifications > p {
-    padding:10px;
+    padding:10px 10px 0 10px;
     color: #6f6f6f;
     font-weight: bold;
 }
 
 .notifications > p > a {
     color: #6f6f6f;
+}
+
+.notifications-toggle {
+    cursor: pointer;
 }
 
 .stats {
