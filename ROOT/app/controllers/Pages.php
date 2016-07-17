@@ -6,8 +6,15 @@ class Pages {
     	$subtitle = $stitle;
 
         //get categories and notifications from db;
-    	$categories = ['a','b','c'];
-    	$categoryGames = ['a','b','c'];
+        $wishlistCount = 8;
+    	$categories = [
+            [ 'id' => 1, 'name' => 'Category 1']
+        ];
+
+        $categoryGames = [
+            [ 'id' => 2, 'name' => 'G_Category 1']
+        ];
+
     	$notifications = ['adsfsdfasdf'];
 
         switch ($page) {
@@ -24,7 +31,7 @@ class Pages {
         }
 
     	return compact (
-            'title', 'subtitle', 'categories',
+            'title', 'subtitle', 'categories','wishlistCount',
             'categoryGames', 'notifications', 'selectHome',
             'selectNewReleases', 'currentPage'
         );
@@ -292,10 +299,84 @@ class Pages {
         render('search', $data);
     }
 
+    public function getWishlist() {
+        $data = $this->load('Wishlist', 'Wishlist');
+        //get from db
+        $data['apps'] = [
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'icon' => 'warlings.webp',
+                'stars' => 5,
+                'price' => 0,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Instagram',
+                'icon' => 'instagram.webp',
+                'stars' => 4,
+                'price' => 1000,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'icon' => 'warlings.webp',
+                'stars' => 5,
+                'price' => 0,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Instagram',
+                'icon' => 'instagram.webp',
+                'stars' => 4,
+                'price' => 1000,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'icon' => 'warlings.webp',
+                'stars' => 5,
+                'price' => 0,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Instagram',
+                'icon' => 'instagram.webp',
+                'stars' => 4,
+                'price' => 1000,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'icon' => 'warlings.webp',
+                'stars' => 5,
+                'price' => 0,
+                'url' => ''
+            ],
+            [
+                'id' => 1,
+                'name' => 'Instagram',
+                'icon' => 'instagram.webp',
+                'stars' => 4,
+                'price' => 1000,
+                'url' => ''
+            ],
+        ];
+
+        render('categories', $data);
+    }
+
     public function getCategories($id) {
         //get category name from $id;
-        $data = $this->load('Search', 'Category : ' . 'Category Name');
-        $data['category'] = 'Category Name';
+        $catname = 'Category Name';
+        $data = $this->load('Search', 'Category : ' . $catname);
+        $data['category'] = $catname;
         //get from db
         $data['apps'] = [
             [
@@ -663,7 +744,77 @@ class Pages {
         render('myapps.published', $data);
     }
 
-    public function getMyAppsInapp() {
+    public function getMyAppsStatsToday() {
+        $data = $this->load('Stats', 'My Apps');
+        $data['apps'] = [
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'platform' => 'Android',
+                'price' => 5000,
+                'quantity' => 5
+            ]
+        ];
+        render('myapps.stats.today', $data);
+    }
 
+    public function getMyAppsStatsThisWeek() {
+        $data = $this->load('Stats', 'My Apps');
+        $data['apps'] = [
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'platform' => 'Android',
+                'price' => 5000,
+                'quantity' => 5
+            ] ,
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'platform' => 'Android',
+                'price' => 5000,
+                'quantity' => 5
+            ]
+        ];
+        render('myapps.stats.week', $data);
+    }
+
+    public function getMyAppsStatsThisMonth(array $apps = null) {
+        $data = $this->load('Stats', 'My Apps');
+        if ($apps != null) {
+            $data['apps'] = $apps;
+        } else {
+            //get from db
+            $data['apps'] = [
+                [
+                    'id' => 1,
+                    'name' => 'Warlings',
+                    'platform' => 'Android',
+                    'price' => 5000,
+                    'quantity' => 5
+                ] ,
+                [
+                    'id' => 1,
+                    'name' => 'Warlings',
+                    'platform' => 'Android',
+                    'price' => 5000,
+                    'quantity' => 5
+                ]
+            ];
+        }
+        render('myapps.stats.month', $data);
+    }
+
+    public function getMyAppsInapp() {
+        $data = $this->load('Inappropirate', 'My Apps');
+        $data['apps'] = [
+            [
+                'id' => 1,
+                'name' => 'Warlings',
+                'platform' => 'Android',
+                'reportcount' => 5
+            ]
+        ];
+        render('myapps.inapps', $data);
     }
 }

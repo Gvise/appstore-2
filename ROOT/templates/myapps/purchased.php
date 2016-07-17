@@ -1,6 +1,6 @@
 <?php render('master.head', compact('title', 'subtitle')) ?>
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames')) ?>
+<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount')) ?>
 <?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
 
 <div class="contents">
@@ -12,6 +12,7 @@
             <li><a href=<?= url('myapps/inappropirate') ?>>Inappropirate Apps</a></li>
             <li><a href=<?= url('myapps/publish') ?>>Publish</a></li>
         </ul>
+        <hr>
         <div class="panel panel-default unround app-feed-panel">
             <div class="panel-body">
             <?php foreach ($apps as $key => $value): ?>

@@ -1,25 +1,4 @@
 <?php
-function Load($subtitle, $page) {
-	// sidebar
-	$title = Config::get('title');
-	$subtitle = $subtitle;
-	$categories = ['a','b','c'];
-	$categoryGames = ['a','b','c'];
-
-	// navbar
-	$notifications = ['adsfsdfasdf'];
-
-	if($page == 'home') {
-		$selectHome = 'custom-active';
-	} else if($page == 'newreleases') {
-		$selectNewReleases = 'custom-active';
-	} else {
-		$currentPage = $page;
-	}
-
-	return compact('title', 'subtitle', 'categories', 'categoryGames', 'notifications', 'selectHome', 'selectNewReleases', 'currentPage');
-}
-
 App::session('user', [
 	'id' => 1,
 	'name' => 'chan',
@@ -30,6 +9,7 @@ App::map('GET', '/', 'Pages@getIndex');
 App::map('GET', 'home', 'Pages@getHome');
 App::map('GET', 'newreleases','Pages@getNewReleases');
 App::map('GET', 'search', 'Pages@getSearch');
+App::map('GET', 'wishlist', 'Pages@getWishlist');
 App::map('GET', 'categories/[:id]', 'Pages@getCategories');
 
 App::map('GET', 'popular/apps', 'Pages@getPopularApps');
@@ -38,7 +18,13 @@ App::map('GET', 'popular/games', 'Pages@getPopularGames');
 App::map('GET', 'myapps', 'Pages@getMyAppsPurchased');
 App::map('GET', 'myapps/purchased', 'Pages@getMyAppsPurchased');
 App::map('GET', 'myapps/published', 'Pages@getMyAppsPublished');
+App::map('GET', 'myapps/inappropirate', 'Pages@getMyAppsInapp');
+App::map('GET', 'myapps/statistics', 'Pages@getMyAppsStatsToday');
+App::map('GET', 'myapps/statistics/today', 'Pages@getMyAppsStatsToday');
+App::map('GET', 'myapps/statistics/week', 'Pages@getMyAppsStatsThisWeek');
+App::map('GET', 'myapps/statistics/month', 'Pages@getMyAppsStatsThisMonth');
 
+App::map('POST', 'myapps/statistics/filter', 'Tasks@filterStatistics');
 App::map('GET', 'notifications/clear', 'Tasks@clearNotifications');
 
 App::map('GET', 'join','Auth@getJoin');

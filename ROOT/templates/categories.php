@@ -1,6 +1,6 @@
 <?php render('master.head', compact('title', 'subtitle')) ?>
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames')) ?>
+<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount')) ?>
 <?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
 
 <div class="contents">

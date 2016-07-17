@@ -50,10 +50,10 @@
             </ul>
         </li>
         <li role="presentation">
-            <a>
+            <a href=<?= url('wishlist') ?>>
                 <i class="glyphicon glyphicon-heart"></i>
                 Wishlist
-                <?php if(isset($wishlistCount)) : ?>
+                <?php if(isset($wishlistCount) && $wishlistCount > 0) : ?>
                 <span class="pull-right badge"><?=$wishlistCount?></span>
                 <?php endif; ?>
             </a>
@@ -107,7 +107,7 @@
     <div>
         <ul class="nav nav-stacked">
             <?php foreach ($categories as $key => $value) : ?>
-            <li><a href=""><?=$value?></a></li>
+            <li><a href=<?= url('categories/'. $value['id']) ?>><?= $value['name']?></a></li>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -116,7 +116,7 @@
         <hr class="custom-divider">
         <ul class="nav nav-stacked">
             <?php foreach ($categoryGames as $key => $value) : ?>
-            <li><a href=""><?=$value?></a></li>
+            <li><a href=<?= url('categories/'. $value['id']) ?>><?=str_replace('G_', '', $value['name'])?></a></li>
             <?php endforeach; ?>
         </ul>
     </div>

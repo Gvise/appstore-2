@@ -429,3 +429,25 @@
 .clear {
     clear: both;
 }
+
+.nav > li > a {
+    color: black;
+    border-radius: 2px;
+}
+
+.nav > li.active > a, .nav > li.active > a:hover {
+    color: white;
+    background-color: #616161;;
+}
+
+.table > thead > tr {
+    background-color: #e1e1e1;
+}
+
+.table > thead > tr > th, .table > tbody > tr > td, .table > tbody > tr > td > a{
+    color : #3f3f3f;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    border-style: none;
+}
