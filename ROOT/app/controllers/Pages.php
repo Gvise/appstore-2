@@ -817,4 +817,89 @@ class Pages {
         ];
         render('myapps.inapps', $data);
     }
+
+    public function getUser() {
+        $data = $this->load('Account Settings', 'Account Settings');
+        $data['name'] = 'Chan';
+        $data['email'] = 'chan@appstore.com';
+        $data['nrc'] = '9/KhaMaSa(N)057891';
+        $data['billingInfo'] = 'KBZ ATM NO 2344223455222';
+        $data['address'] = 'Mandalay';
+
+        render('user-settings', $data);
+    }
+
+    public function postUser() {
+        // update process
+        redirect(url('user'), [
+            'profileError' => ['Error1', 'Error2']
+        ]);
+    }
+
+    public function postUserPassword() {
+        // update process
+        redirect(url('user'), [
+            'passwordError' => ['Error1', 'Error2']
+        ]);
+    }
+
+    public function getDeposit() {
+        $data = $this->load('Deposit', 'Deposit');
+        $data['billingAddress'] = 'KBZ ATM: 1399303030303';
+        render('transitions.deposit', $data);
+    }
+
+    public function postDeposit() {
+        //do deposit process
+
+        redirect(url('deposit'), [
+            'error' => ['e1', 'e2'],
+            'status' => 'Request Success!'
+        ]);
+    }
+
+    public function getWithdraw() {
+        $data = $this->load('Withdraw', 'Withdraw');
+
+        render('transitions.withdraw', $data);
+    }
+
+    public function postWithdraw() {
+        //do withdraw process
+
+        redirect(url('withdraw'), [
+            'error' => ['e1', 'e2'],
+            'status' => 'Request Success!'
+        ]);
+    }
+
+    public function getLogs() {
+        $data = $this->load('Logs', 'Logs');
+        $data['deposit'] = [
+            [
+                'amount' => 10000,
+                'date' => '06/03/2016',
+                'completed' => true
+            ],
+            [
+                'amount' => 20000,
+                'date' => '07/03/2016',
+                'completed' => false
+            ]
+        ];
+
+        $data['withdraw'] = [
+            [
+                'amount' => 10000,
+                'date' => '06/03/2016',
+                'completed' => true
+            ],
+            [
+                'amount' => 20000,
+                'date' => '07/03/2016',
+                'completed' => false
+            ]
+        ];
+        render('transitions.logs', $data);
+    }
 }

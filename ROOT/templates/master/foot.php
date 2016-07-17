@@ -1,5 +1,5 @@
 <?php if (($status = with('status')) != null): ?>
-    <div class="alert alert-success alert-dismissible" role="alert" style="position:fixed;bottom:50px;right:5px;z-index:1033;margin:0">
+    <div class="unround alert alert-default alert-dismissible unround" role="alert" style="-webkit-box-shadow: 0 0 1px 1px #BFBFBF;box-shadow: 0 0 1px 1px #BFBFBF;position:fixed;top:50px;right:5px;z-index:1033;margin:0;min-width:300px">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <?= $status ?>
     </div>

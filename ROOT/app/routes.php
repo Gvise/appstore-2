@@ -2,35 +2,47 @@
 App::session('user', [
 	'id' => 1,
 	'name' => 'chan',
-	'type' => 1
+	'type' => 3
 ]);
 
-App::map('GET', '/', 'Pages@getIndex');
-App::map('GET', 'home', 'Pages@getHome');
-App::map('GET', 'newreleases','Pages@getNewReleases');
-App::map('GET', 'search', 'Pages@getSearch');
-App::map('GET', 'wishlist', 'Pages@getWishlist');
-App::map('GET', 'categories/[:id]', 'Pages@getCategories');
+get('/', 'Pages@getIndex');
+get('home', 'Pages@getHome');
+get('newreleases','Pages@getNewReleases');
+get('search', 'Pages@getSearch');
+get('wishlist', 'Pages@getWishlist');
+get('categories/[:id]', 'Pages@getCategories');
 
-App::map('GET', 'popular/apps', 'Pages@getPopularApps');
-App::map('GET', 'popular/games', 'Pages@getPopularGames');
+get('popular/apps', 'Pages@getPopularApps');
+get('popular/games', 'Pages@getPopularGames');
 
-App::map('GET', 'myapps', 'Pages@getMyAppsPurchased');
-App::map('GET', 'myapps/purchased', 'Pages@getMyAppsPurchased');
-App::map('GET', 'myapps/published', 'Pages@getMyAppsPublished');
-App::map('GET', 'myapps/inappropirate', 'Pages@getMyAppsInapp');
-App::map('GET', 'myapps/statistics', 'Pages@getMyAppsStatsToday');
-App::map('GET', 'myapps/statistics/today', 'Pages@getMyAppsStatsToday');
-App::map('GET', 'myapps/statistics/week', 'Pages@getMyAppsStatsThisWeek');
-App::map('GET', 'myapps/statistics/month', 'Pages@getMyAppsStatsThisMonth');
+get('myapps', 'Pages@getMyAppsPurchased');
+get('myapps/purchased', 'Pages@getMyAppsPurchased');
+get('myapps/published', 'Pages@getMyAppsPublished');
+get('myapps/inappropirate', 'Pages@getMyAppsInapp');
+get('myapps/statistics', 'Pages@getMyAppsStatsToday');
+get('myapps/statistics/today', 'Pages@getMyAppsStatsToday');
+get('myapps/statistics/week', 'Pages@getMyAppsStatsThisWeek');
+get('myapps/statistics/month', 'Pages@getMyAppsStatsThisMonth');
 
-App::map('POST', 'myapps/statistics/filter', 'Tasks@filterStatistics');
-App::map('GET', 'notifications/clear', 'Tasks@clearNotifications');
+get('user', 'Pages@getUser');
+post('user', 'Pages@postUser');
+post('user/password', 'Pages@postUserPassword');
 
-App::map('GET', 'join','Auth@getJoin');
-App::map('GET', 'recover', 'Auth@getRecover');
-App::map('POST', 'recover', 'Auth@postRecover');
-App::map('GET', 'logout', 'Auth@getLogout');
+get('deposit', 'Pages@getDeposit');
+post('deposit', 'Pages@postDeposit');
 
-App::map('POST', 'login', 'Auth@postLogin');
-App::map('POST', 'register', 'Auth@postRegister');
+get('withdraw', 'Pages@getWithdraw');
+post('withdraw', 'Pages@postWithdraw');
+
+get('logs', 'Pages@getLogs');
+
+post('myapps/statistics/filter', 'Tasks@filterStatistics');
+get('notifications/clear', 'Tasks@clearNotifications');
+
+get('join','Auth@getJoin');
+get('recover', 'Auth@getRecover');
+post('recover', 'Auth@postRecover');
+get('logout', 'Auth@getLogout');
+
+post('login', 'Auth@postLogin');
+post('register', 'Auth@postRegister');

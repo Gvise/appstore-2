@@ -37,7 +37,7 @@
             <thead>
                 <tr>
                     <th>
-                        NO ROWS
+                        NO RECORDS
                     </th>
                 </tr>
             </thead>

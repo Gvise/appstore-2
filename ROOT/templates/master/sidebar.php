@@ -46,7 +46,7 @@
                  MMK</span>
             </a>
             <ul class="nav nav-stacked collapse" id="collapse-account">
-                <li><a href="">Setting</a></li>
+                <li><a href=<?= url('user') ?>>Setting</a></li>
             </ul>
         </li>
         <li role="presentation">
@@ -60,45 +60,44 @@
         </li>
         <hr class="custom-divider">
         <li role="presentation">
-            <a href=""><i class="glyphicon glyphicon-collapse-down"></i> Deposit</a>
+            <a href=<?= url('deposit') ?>><i class="glyphicon glyphicon-collapse-down"></i> Deposit</a>
         </li>
 
     <!--  allows only develover or above-->
     <?php if (session('user')['type'] >= 2): ?>
         <li role="presentation">
-            <a href=""><i class="glyphicon glyphicon-collapse-up"></i> Withdraw</a>
+            <a href=<?= url('withdraw') ?>><i class="glyphicon glyphicon-collapse-up"></i> Withdraw</a>
         </li>
     <?php endif; ?>
     <!--  allows only develover or above-->
         <li role="presentation">
-            <a href=""><i class="glyphicon glyphicon-book"></i> Logs</a>
+            <a href=<?= url('logs') ?>><i class="glyphicon glyphicon-book"></i> Logs</a>
         </li>
 
         <!--  allows only admin-->
     <?php if (session('user')['type'] == 3): ?>
-        <hr class="custom-divider">
-        <li role="presentation">
+        <hr class="hidden custom-divider admin-mode-items">
+        <li class="hidden admin-mode-items" role="presentation">
             <a href=""><i class="glyphicon glyphicon-user"></i> Users</a>
         </li>
-        <li role="presentation"><a href=""><i class="glyphicon glyphicon-transfer"></i> Transactions</a></li>
-        <li role="presentation"><a href=""><i class="glyphicon glyphicon-transfer"></i> Transaction Reports</a></li>
-        <li role="presentation">
+        <li class="hidden admin-mode-items" role="presentation"><a href=""><i class="glyphicon glyphicon-transfer"></i> Transactions</a></li>
+        <li class="hidden admin-mode-items" role="presentation"><a href=""><i class="glyphicon glyphicon-transfer"></i> Transaction Reports</a></li>
+        <li class="hidden admin-mode-items" role="presentation">
             <a href=""><i class="glyphicon glyphicon-file"></i> Inappropirate Apps</a>
         </li>
-        <li role="presentation">
+        <li class="hidden admin-mode-items" role="presentation">
             <a href=""><i class="glyphicon glyphicon-bell"></i> Notify</a>
         </li>
     <?php endif; ?>
         <!--  allows only admin-->
     </ul>
 
-    <!-- <div class="copyright dropup">
+    <div class="copyright">
         <span>Copyright @ 2016</span>
-        <button class="btn btn-xs btn-default unround"  data-toggle="dropdown">English <span class="caret"></span></button>
-        <ul class="dropdown-menu unround">
-            <li><a href="">ျမန္မာ</a></li>
-        </ul>
-    </div> -->
+    <?php if (session('user')['type'] == 3): ?>
+        <button class="btn btn-xs btn-default unround"  id="admin-mode" data-mode="2">DEV</button>
+    <?php endif; ?>
+    </div>
 <?php endif ?>
 </div>
 

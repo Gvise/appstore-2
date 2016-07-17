@@ -1,4 +1,17 @@
 <?php
+
+function map($method, $url, $callback, $name = null) {
+    App::map($method, $url, $callback, $name);
+}
+
+function get($url, $callback, $name = null) {
+    App::map('GET', $url, $callback, $name);
+}
+
+function post($url, $callback, $name = null) {
+    App::map('POST', $url, $callback, $name);
+}
+
 function url($url) {
     return App::url($url);
 }
