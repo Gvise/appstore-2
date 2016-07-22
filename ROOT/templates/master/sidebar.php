@@ -76,28 +76,17 @@
 
         <!--  allows only admin-->
     <?php if (session('user')['type'] == 3): ?>
-        <hr class="hidden custom-divider admin-mode-items">
-        <li class="hidden admin-mode-items" role="presentation">
-            <a href=""><i class="glyphicon glyphicon-user"></i> Users</a>
-        </li>
-        <li class="hidden admin-mode-items" role="presentation"><a href=""><i class="glyphicon glyphicon-transfer"></i> Transactions</a></li>
-        <li class="hidden admin-mode-items" role="presentation"><a href=""><i class="glyphicon glyphicon-transfer"></i> Transaction Reports</a></li>
-        <li class="hidden admin-mode-items" role="presentation">
-            <a href=""><i class="glyphicon glyphicon-file"></i> Inappropirate Apps</a>
-        </li>
-        <li class="hidden admin-mode-items" role="presentation">
-            <a href=""><i class="glyphicon glyphicon-bell"></i> Notify</a>
+        <hr class="custom-divider">
+        <li role="presentation">
+            <a href=<?= url('admin') ?>><i class="glyphicon glyphicon-cog"></i> Administration</a>
         </li>
     <?php endif; ?>
         <!--  allows only admin-->
     </ul>
 
-    <div class="copyright">
+    <!-- <div class="copyright">
         <span>Copyright @ 2016</span>
-    <?php if (session('user')['type'] == 3): ?>
-        <button class="btn btn-xs btn-default unround"  id="admin-mode" data-mode="2">DEV</button>
-    <?php endif; ?>
-    </div>
+    </div> -->
 <?php endif ?>
 </div>
 

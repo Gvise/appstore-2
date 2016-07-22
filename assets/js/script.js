@@ -57,15 +57,3 @@ $('.custom-dialog-opener').click(function() {
 $('.notifications-toggle').click(function() {
     $('.notifications').toggleClass('hidden');
 });
-
-$('#admin-mode').click(function() {
-    if($(this).data('mode') == '2') {
-        $(this).data('mode', '3');
-        $(this).text('ADMIN');
-        $('.admin-mode-items').toggleClass('hidden');
-    } else if($(this).data('mode') == '3') {
-        $(this).data('mode', '2');
-        $(this).text('DEV');
-        $('.admin-mode-items').toggleClass('hidden');
-    }
-});

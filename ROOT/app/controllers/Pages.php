@@ -875,6 +875,7 @@ class Pages {
 
     public function getLogs() {
         $data = $this->load('Logs', 'Logs');
+        //get from database
         $data['deposit'] = [
             [
                 'amount' => 10000,
@@ -901,5 +902,50 @@ class Pages {
             ]
         ];
         render('transitions.logs', $data);
+    }
+
+    public function getAdmin() {
+        $data = $this->load('Users', 'Users');
+        //get from db
+        $data['users'] = [
+            [
+                'id' => '2',
+                'name' => 'Chan',
+                'email' => 'chan@chan.com'
+            ]
+        ];
+
+        $data['developers'] = [
+            [
+                'id' => '3',
+                'name' => 'Chan',
+                'email' => 'chan@chan.com',
+                'appcount' => 123
+            ]
+        ];
+
+        $data['admins'] = [
+            [
+                'id' => '3',
+                'name' => 'Chan',
+                'email' => 'chan@chan.com',
+                'appcount' => 123
+            ]
+        ];
+
+        render('admin.users', $data);
+    }
+
+    public function getAdminNotify() {
+        $data = $this->load('Notify', 'Notify');
+        //get from db
+        $data['id'] = Request::inputs('id');
+
+        $data['users'] = [
+            ['id' => 1, 'name' => 'Chan'],
+            ['id' => 2, 'name' => 'Nyein'],
+        ];
+
+        render('admin.notify', $data);
     }
 }

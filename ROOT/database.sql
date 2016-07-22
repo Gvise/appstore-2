@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `appstore`.`applications` (
 `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 `user_id` INT UNSIGNED NOT NULL,
 `keyword` VARCHAR(255) NOT NULL,
+`rating` FLOAT,
 `updated_date` DATETIME NOT NULL,
 `icon` VARCHAR(255) NOT NULL,
 PRIMARY KEY (`id`),
@@ -133,7 +134,6 @@ CREATE TABLE IF NOT EXISTS `appstore`.`stars` (
 `app_id` INT UNSIGNED NOT NULL,
 `user_id` INT UNSIGNED NOT NULL,
 `star` INT UNSIGNED NOT NULL,
-`date` DATETIME NOT NULL,
 PRIMARY KEY (`app_id`, `user_id`),
 FOREIGN KEY (`user_id`)
 REFERENCES `appstore`.`users` (`id`)
