@@ -14,11 +14,15 @@
 <?php else: ?>
     <div class="col-md-6 col-md-offset-3">
 <?php endif; ?>
+    <?php if (($lerror = with('lerror') != null)): ?>
         <div class="unround alert alert-danger">
             <ul>
-                <li>Error</li>
+                <?php foreach ($lerror as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
             </ul>
         </div>
+    <?php endif; ?>
         <div class="unround panel panel-default">
             <div class="panel-heading">
                 <span class="text-success">Login</span>
@@ -58,11 +62,15 @@
     </div>
 <?php if ($loginOnly == NULL): ?>
     <div class="col-md-6">
+    <?php if (($rerror = with('rerror') != null)): ?>
         <div class="unround alert alert-danger">
             <ul>
-                <li>Error</li>
+                <?php foreach ($rerror as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
             </ul>
         </div>
+    <?php endif; ?>
         <div class="unround panel panel-default">
             <div class="panel-heading">
                 <span class="text-success">Register</span>
