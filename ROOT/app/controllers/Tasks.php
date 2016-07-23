@@ -26,4 +26,20 @@ class Tasks {
         $pages = new Pages();
         $pages->getMyAppsStatsThisMonth($apps);
     }
+
+    public function postAdminAddCategory() {
+
+    }
+
+    public function postAdminAddPlatform() {
+
+    }
+
+    public function getAdminDelCategory($id) {
+
+    }
+
+    public function getAdminDelPlatform($id) {
+
+    }
 }

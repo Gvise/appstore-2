@@ -1,6 +1,6 @@
 <?php
 return [
-    'title' => 'AppStore',
+    'title' => 'Gavity',
     'basepath' => 'appstore/',
     'views' => __ROOT__.'templates/',
     'db' => [

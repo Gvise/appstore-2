@@ -29,7 +29,7 @@
                     <td><?= $i+1 ?></td>
                     <td><a href=<?= url('app/'.$apps[$i]['id']) ?> data-toggle="tooltips" data-placement="right" title="Review App"><?= $apps[$i]['name'] ?></a> <i class="glyphicon glyphicon-share-alt"></i></td>
                     <td><?= $apps[$i]['platform'] ?></td>
-                    <td><?= $apps[$i]['reportcount'] ?></td>
+                    <td><span class="badge"><?= $apps[$i]['reportcount'] ?></span></td>
                 </tr>
             <?php endfor; ?>
             </tbody>

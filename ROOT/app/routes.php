@@ -5,50 +5,74 @@ session('user', [
 	'type' => 3
 ]);
 
-get('/', 'Pages@getIndex');
-get('home', 'Pages@getHome');
-get('newreleases','Pages@getNewReleases');
-get('search', 'Pages@getSearch');
-get('wishlist', 'Pages@getWishlist');
-get('categories/[:id]', 'Pages@getCategories');
+//Block Pages
+{
+	get('/', 'Pages@getIndex');
+	get('home', 'Pages@getHome');
+	get('newreleases','Pages@getNewReleases');
+	get('search', 'Pages@getSearch');
+	get('wishlist', 'Pages@getWishlist');
+	get('categories/[:id]', 'Pages@getCategories');
 
-get('popular/apps', 'Pages@getPopularApps');
-get('popular/games', 'Pages@getPopularGames');
+	get('popular/apps', 'Pages@getPopularApps');
+	get('popular/games', 'Pages@getPopularGames');
 
-get('myapps', 'Pages@getMyAppsPurchased');
-get('myapps/purchased', 'Pages@getMyAppsPurchased');
-get('myapps/published', 'Pages@getMyAppsPublished');
-get('myapps/inappropirate', 'Pages@getMyAppsInapp');
-get('myapps/statistics', 'Pages@getMyAppsStatsToday');
-get('myapps/statistics/today', 'Pages@getMyAppsStatsToday');
-get('myapps/statistics/week', 'Pages@getMyAppsStatsThisWeek');
-get('myapps/statistics/month', 'Pages@getMyAppsStatsThisMonth');
+	get('user', 'Pages@getUser');
+	post('user', 'Pages@postUser');
+	post('user/password', 'Pages@postUserPassword');
 
-get('user', 'Pages@getUser');
-post('user', 'Pages@postUser');
-post('user/password', 'Pages@postUserPassword');
+	get('deposit', 'Pages@getDeposit');
+	post('deposit', 'Pages@postDeposit');
 
-get('deposit', 'Pages@getDeposit');
-post('deposit', 'Pages@postDeposit');
+	get('withdraw', 'Pages@getWithdraw');
+	post('withdraw', 'Pages@postWithdraw');
 
-get('withdraw', 'Pages@getWithdraw');
-post('withdraw', 'Pages@postWithdraw');
+	get('logs', 'Pages@getLogs');
+}
 
-get('logs', 'Pages@getLogs');
+// Block MyApps
+{
+	get('myapps', 'MyApps@getMyAppsPurchased');
+	get('myapps/purchased', 'MyApps@getMyAppsPurchased');
+	get('myapps/published', 'MyApps@getMyAppsPublished');
+	get('myapps/inappropirate', 'MyApps@getMyAppsInapp');
+	get('myapps/statistics', 'MyApps@getMyAppsStatsToday');
+	get('myapps/statistics/today', 'MyApps@getMyAppsStatsToday');
+	get('myapps/statistics/week', 'MyApps@getMyAppsStatsThisWeek');
+	get('myapps/statistics/month', 'MyApps@getMyAppsStatsThisMonth');
+}
 
-get('admin', 'Pages@getAdmin');
-get('admin/notify', 'Pages@getAdminNotify');
+// Block Admin
+{
+	get('admin', 'Admin@getAdmin');
+	get('admin/cateplat', 'Admin@getAdminCatePlat');
+	get('admin/transitions', 'Admin@getAdminTransitions');
+	get('admin/transitionreports', 'Admin@getAdminTransitonReports');
+	get('admin/inappropirate', 'Admin@getAdminInappropirate');
+	get('admin/notify', 'Admin@getAdminNotify');
+}
 
-post('myapps/statistics/filter', 'Tasks@filterStatistics');
-get('notifications/clear', 'Tasks@clearNotifications');
+//Block Tasks
+{
+	post('admin/addcategory', 'Tasks@postAdminAddCategory');
+	get('admin/delcategory/[:id]', 'Tasks@getAdminDelCategory');
+	post('admin/addplatform', 'Tasks@postAdminAddPlatform');
+	get('admin/delplatform/[:id]', 'Tasks@getAdminDelPlatform');
 
-get('join','Auth@getJoin');
-get('recover', 'Auth@getRecover');
-post('recover', 'Auth@postRecover');
-get('logout', 'Auth@getLogout');
+	post('myapps/statistics/filter', 'Tasks@filterStatistics');
+	get('notifications/clear', 'Tasks@clearNotifications');
+}
 
-post('login', 'Auth@postLogin');
-post('register', 'Auth@postRegister');
+//Block Auth
+{
+	get('join','Auth@getJoin');
+	get('recover', 'Auth@getRecover');
+	post('recover', 'Auth@postRecover');
+	get('logout', 'Auth@getLogout');
+
+	post('login', 'Auth@postLogin');
+	post('register', 'Auth@postRegister');
+}
 
 get('dbExamples',function() {
     // DB Class Usage

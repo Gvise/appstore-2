@@ -8,7 +8,9 @@
         <ul class="nav nav-tabs">
             <ul class="nav nav-tabs">
                 <li class="active"><a href=<?= url('admin') ?>>Users</a></li>
+                <li><a href=<?= url('admin/cateplat') ?>>Categories &amp; Platforms</a></li>
                 <li><a href=<?= url('admin/transitions') ?>>Transitions</a></li>
+                <li><a href=<?= url('admin/transitionreports') ?>>Transition Reports</a></li>
                 <li><a href=<?= url('admin/inappropirate') ?>>Inappropirate Apps</a></li>
                 <li><a href=<?= url('admin/notify') ?>>Notify</a></li>
             </ul>
@@ -23,7 +25,7 @@
                         <th>NAME</th>
                         <th>E-MAIL</th>
                         <th>APP COUNT</th>
-                        <th>ACTION</th>
+                        <th><i class="glyphicon glyphicon-cog"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,8 +37,8 @@
                         <td><?= $admins[$i]['appcount'] ?></td>
                         <td>
                             <div class="btn-group">
-                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-default btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
-                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-default btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
+                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
+                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
                             </div>
                         </td>
                     </tr>
@@ -62,7 +64,7 @@
                         <th>NO.</th>
                         <th>NAME</th>
                         <th>E-MAIL</th>
-                        <th>ACTION</th>
+                        <th><i class="glyphicon glyphicon-cog"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,8 +75,8 @@
                         <td><?= $users[$i]['email'] ?></td>
                         <td>
                             <div class="btn-group">
-                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-default btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
-                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-default btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
+                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
+                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
                             </div>
                         </td>
                     </tr>
@@ -101,7 +103,7 @@
                         <th>NAME</th>
                         <th>E-MAIL</th>
                         <th>APP COUNT</th>
-                        <th>ACTION</th>
+                        <th><i class="glyphicon glyphicon-cog"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,8 +115,8 @@
                         <td><?= $developers[$i]['appcount'] ?></td>
                         <td>
                             <div class="btn-group">
-                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-default btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
-                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-default btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
+                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
+                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
                             </div>
                         </td>
                     </tr>

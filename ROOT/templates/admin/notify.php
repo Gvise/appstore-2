@@ -7,7 +7,9 @@
     <div class="container">
         <ul class="nav nav-tabs">
             <li><a href=<?= url('admin') ?>>Users</a></li>
+            <li><a href=<?= url('admin/cateplat') ?>>Categories &amp; Platforms</a></li>
             <li><a href=<?= url('admin/transitions') ?>>Transitions</a></li>
+            <li><a href=<?= url('admin/transitionreports') ?>>Transition Reports</a></li>
             <li><a href=<?= url('admin/inappropirate') ?>>Inappropirate Apps</a></li>
             <li class="active"><a href=<?= url('admin/notify') ?>>Notify</a></li>
         </ul>
