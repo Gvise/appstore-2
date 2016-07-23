@@ -5,6 +5,7 @@
 
 <div class="contents">
     <div class="container">
+    <?php if (session('user')['type'] > 1): ?>
         <ul class="nav nav-pills">
             <li class="active"><a href=<?= url('myapps') ?>>Purchased</a></li>
             <li><a href=<?= url('myapps/published') ?>>Published</a></li>
@@ -13,6 +14,7 @@
             <li><a href=<?= url('myapps/publish') ?>>Publish</a></li>
         </ul>
         <hr>
+    <?php endif; ?>
         <div class="panel panel-default unround app-feed-panel">
             <div class="panel-body">
             <?php foreach ($apps as $key => $value): ?>

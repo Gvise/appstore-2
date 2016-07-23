@@ -1,6 +1,6 @@
 <?php
 class MyApps {
-    public function getMyAppsPurchased() {
+    public function getPurchased() {
         $data = Pages::load('Purchased', 'My Apps');
 
         //get from database;
@@ -74,7 +74,7 @@ class MyApps {
         render('myapps.purchased', $data);
     }
 
-    public function getMyAppsPublished() {
+    public function getPublished() {
         $data = Pages::load('Published', 'My Apps');
 
         //get from database;
@@ -148,7 +148,7 @@ class MyApps {
         render('myapps.published', $data);
     }
 
-    public function getMyAppsStatsToday() {
+    public function getStatsToday() {
         $data = Pages::load('Stats', 'My Apps');
         $data['apps'] = [
             [
@@ -162,7 +162,7 @@ class MyApps {
         render('myapps.stats.today', $data);
     }
 
-    public function getMyAppsStatsThisWeek() {
+    public function getStatsThisWeek() {
         $data = Pages::load('Stats', 'My Apps');
         $data['apps'] = [
             [
@@ -183,7 +183,7 @@ class MyApps {
         render('myapps.stats.week', $data);
     }
 
-    public function getMyAppsStatsThisMonth(array $apps = null) {
+    public function getStatsThisMonth(array $apps = null) {
         $data = Pages::load('Stats', 'My Apps');
         if ($apps != null) {
             $data['apps'] = $apps;
@@ -209,7 +209,7 @@ class MyApps {
         render('myapps.stats.month', $data);
     }
 
-    public function getMyAppsInapp() {
+    public function getInapp() {
         $data = Pages::load('My Inappropirate Apps', 'My Apps');
         $data['apps'] = [
             [
@@ -220,5 +220,9 @@ class MyApps {
             ]
         ];
         render('myapps.inapps', $data);
+    }
+
+    public function getPublish() {
+        
     }
 }

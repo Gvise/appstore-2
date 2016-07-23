@@ -23,8 +23,8 @@ class Tasks {
             ]
         ];
 
-        $pages = new Pages();
-        $pages->getMyAppsStatsThisMonth($apps);
+        $myapps = new MyApps();
+        $myapps->getStatsThisMonth($apps);
     }
 
     public function postAdminAddCategory() {

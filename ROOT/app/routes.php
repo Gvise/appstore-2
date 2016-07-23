@@ -32,24 +32,25 @@ session('user', [
 
 // Block MyApps
 {
-	get('myapps', 'MyApps@getMyAppsPurchased');
-	get('myapps/purchased', 'MyApps@getMyAppsPurchased');
-	get('myapps/published', 'MyApps@getMyAppsPublished');
-	get('myapps/inappropirate', 'MyApps@getMyAppsInapp');
-	get('myapps/statistics', 'MyApps@getMyAppsStatsToday');
-	get('myapps/statistics/today', 'MyApps@getMyAppsStatsToday');
-	get('myapps/statistics/week', 'MyApps@getMyAppsStatsThisWeek');
-	get('myapps/statistics/month', 'MyApps@getMyAppsStatsThisMonth');
+	get('myapps', 'MyApps@getPurchased');
+	get('myapps/purchased', 'MyApps@getPurchased');
+	get('myapps/published', 'MyApps@getPublished');
+	get('myapps/inappropirate', 'MyApps@getInapp');
+	get('myapps/statistics', 'MyApps@getStatsToday');
+	get('myapps/statistics/today', 'MyApps@getStatsToday');
+	get('myapps/statistics/week', 'MyApps@getStatsThisWeek');
+	get('myapps/statistics/month', 'MyApps@getStatsThisMonth');
+	get('myapp/publish', 'MyApps@getPublish');
 }
 
 // Block Admin
 {
-	get('admin', 'Admin@getAdmin');
-	get('admin/cateplat', 'Admin@getAdminCatePlat');
-	get('admin/transitions', 'Admin@getAdminTransitions');
-	get('admin/transitionreports', 'Admin@getAdminTransitonReports');
-	get('admin/inappropirate', 'Admin@getAdminInappropirate');
-	get('admin/notify', 'Admin@getAdminNotify');
+	get('admin', 'Admin@getUsers');
+	get('admin/cateplat', 'Admin@getCatePlat');
+	get('admin/transitions', 'Admin@getTransitions');
+	get('admin/transitionreports', 'Admin@getTransitonReports');
+	get('admin/inappropirate', 'Admin@getInappropirate');
+	get('admin/notify', 'Admin@getNotify');
 }
 
 //Block Tasks

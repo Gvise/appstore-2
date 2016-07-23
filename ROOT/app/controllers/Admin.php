@@ -1,6 +1,6 @@
 <?php
 class Admin {
-    public function getAdmin() {
+    public function getUsers() {
         $data = Pages::load('Users', 'Users');
         //get from db
         $data['users'] = [
@@ -32,7 +32,7 @@ class Admin {
         render('admin.users', $data);
     }
 
-    public function getAdminNotify() {
+    public function getNotify() {
         $data = Pages::load('Notify', 'Notify');
         //get from db
         $data['id'] = Request::inputs('id');
@@ -45,28 +45,28 @@ class Admin {
         render('admin.notify', $data);
     }
 
-    public function getAdminCatePlat() {
+    public function getCatePlat() {
         $data = Pages::load('Categories & Platform', 'Categories and Platform');
         //get from db
 
         render('admin.cateplat', $data);
     }
 
-    public function getAdminTransitions() {
+    public function getTransitions() {
         $data = Pages::load('Transitions', 'Transitions');
         //get from db
 
         render('admin.transitions', $data);
     }
 
-    public function getAdminTransitonReports() {
+    public function getTransitonReports() {
         $data = Pages::load('Transition Reports', 'Transition Reports');
         //get from db
 
         render('admin.transitionreports', $data);
     }
 
-    public function getAdminInappropirate() {
+    public function getInappropirate() {
         $data = Pages::load('Inappropirate Apps', 'Inappropirate Apps');
         //get from db
 
