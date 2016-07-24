@@ -14,14 +14,19 @@
             <li><a href=<?= url('admin/notify') ?>>Notify</a></li>
         </ul>
         <br>
-        <div class="unround alert alert-danger">
-            <ul>
-                <li>Error</li>
-            </ul>
-        </div>
+        <?php if (($error = with('error')) != null): ?>
+            <div class="unround alert alert-danger">
+                <ul>
+                <?php foreach ($error as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
         <div class="col-md-4">
+        <?php if (isset($deposit)): ?>
             <table class="table table-hover table-condensed">
-                <caption>Deposit Transitions <a class="unround pull-right btn btn-default btn-xs"><small>DELETE ALL</small></a></caption>
+                <caption>Deposit Transitions <a href=<?= url('admin/transitions/deleteall/1') ?> class="unround pull-right btn btn-default btn-xs"><small>DELETE ALL</small></a></caption>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -31,18 +36,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>10000</td>
-                        <td>KBZ ATM 112239494949</td>
-                        <td>11/11/1111</td>
-                    </tr>
+                    <?php foreach ($deposit as $key => $value): ?>
+                        <tr>
+                            <td> <?= $value['id'] ?></td>
+                            <td> <?= $value['amount'] ?></td>
+                            <td> <?= $value['billingInfo'] ?></td>
+                            <td> <?= (new DateTime($value['date']))->format('M d, Y') ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php else: ?>
+            <table class="table table-hover table-condensed">
+                <caption>Deposit Transitions</caption>
+                <thead>
+                    <tr>
+                        <th>
+                            NO RECORDS
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        <?php endif ?>
         </div>
         <div class="col-md-4">
+        <?php if (isset($withdraw)): ?>
             <table class="table table-hover table-condensed">
-                <caption>Withdraw Transitions <a class="unround pull-right btn btn-default btn-xs"><small>DELETE ALL</small></a></caption>
+                <caption>Withdraw Transitions <a href=<?= url('admin/transitions/deleteall/2') ?> class="unround pull-right btn btn-default btn-xs"><small>DELETE ALL</small></a></caption>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -52,16 +72,31 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach ($withdraw as $key => $value): ?>
                     <tr>
-                        <td>1</td>
-                        <td>10000</td>
-                        <td>KBZ ATM 112239494949</td>
-                        <td>11/11/1111</td>
+                        <td> <?= $value['id'] ?></td>
+                        <td> <?= $value['amount'] ?></td>
+                        <td> <?= $value['billingInfo'] ?></td>
+                        <td> <?= (new DateTime($value['date']))->format('M d, Y') ?></td>
                     </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php else: ?>
+            <table class="table table-hover table-condensed">
+                <caption>Withdraw Transitions</caption>
+                <thead>
+                    <tr>
+                        <th>
+                            NO RECORDS
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        <?php endif ?>
         </div>
         <div class="col-md-4">
+        <?php if (isset($pending)): ?>
             <table class="table table-hover table-condensed">
                 <caption>Pending Transitons</caption>
                 <thead>
@@ -75,19 +110,39 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach ($pending as $key => $value): ?>
                     <tr>
-                        <td>1</td>
-                        <td>10000</td>
-                        <td>KBZ ATM 112239494949</td>
-                        <td>11/11/1111</td>
-                        <td><strong>D</strong></td>
+                        <td> <?= $value['id'] ?></td>
+                        <td> <?= $value['amount'] ?></td>
+                        <td> <?= $value['billingInfo'] ?></td>
+                        <td> <?= (new DateTime($value['date']))->format('m/d./y') ?></td>
                         <td>
-                            <a class="unround btn btn-success btn-xs glyphicon glyphicon-ok" data-toggle="tooltips" data-placement="right" title="Confirm this transition."></a>
-                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this transition."></a>
+                        <?php if ($value['type'] == 1): ?>
+                            <strong>D</strong>
+                        <?php else: ?>
+                            <strong>W</strong>
+                        <?php endif; ?>
+                        </td>
+                        <td>
+                            <a href=<?= url('admin/transitions/confirm/' . $value['id'] ) ?> class="unround btn btn-success btn-xs glyphicon glyphicon-ok" data-toggle="tooltips" data-placement="right" title="Confirm this transition."></a>
+                            <a href=<?= url('admin/transitions/delete/' . $value['id'] ) ?> class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this transition."></a>
                         </td>
                     </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php else: ?>
+            <table class="table table-hover table-condensed">
+                <caption>Pending Transitons</caption>
+                <thead>
+                    <tr>
+                        <th>
+                            NO RECORDS
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        <?php endif ?>
         </div>
     </div>
 </div>

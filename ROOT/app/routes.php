@@ -23,6 +23,7 @@
 	post('withdraw', 'Pages@postWithdraw');
 
 	get('logs', 'Pages@getLogs');
+	get('logs/report/[:id]', 'Pages@reportLog');
 }
 
 // Block MyApps
@@ -43,6 +44,9 @@
 	get('admin', 'Admin@getUsers');
 	get('admin/cateplat', 'Admin@getCatePlat');
 	get('admin/transitions', 'Admin@getTransitions');
+	get('admin/transitions/confirm/[:id]', 'Admin@getConfirmTransition');
+	get('admin/transitions/delete/[:id]', 'Admin@getDeleteTransition');
+	get('admin/transitions/deleteall/[:type]', 'Admin@getDeleteAllTransition');
 	get('admin/transitionreports', 'Admin@getTransitonReports');
 	get('admin/inappropirate', 'Admin@getInappropirate');
 	get('admin/notify', 'Admin@getNotify');

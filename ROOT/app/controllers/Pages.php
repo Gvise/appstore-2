@@ -786,8 +786,6 @@ class Pages {
         Auth::check();
         Auth::proirity(2);
 
-        Auth::check();
-
         if(count($error = required([
             'withdrawAmount'
         ])) > 0) {
@@ -795,6 +793,10 @@ class Pages {
                 'error' => $error
             ]);
         } else {
+            $balance = DB::query('select balance from profiles where user_id = ?', [
+                session('user')['id']
+            ])[0]['balance'];
+
             $withdrawAmount = inputs('withdrawAmount');
 
             if($withdrawAmount < Config::get('minwithdraw')) {
@@ -802,14 +804,24 @@ class Pages {
                 redirect(url('withdraw'), [
                     'error' => $error
                 ]);
+            } elseif($withdrawAmount > $balance) {
+                $error[]= 'Not enouch balance';
+                redirect(url('withdraw'), [
+                    'error' => $error
+                ]);
             } else {
-                // var_dump((new DateTime())->format('Y-m-d'));
+                DB::query('update profiles set balance = balance - ? where user_id = ?', [
+                    $withdrawAmount,
+                    session('user')['id']
+                ]);
+
                 $result = DB::query('insert into transactions (user_id, completed, date, amount, type) values(?,?,now(),?, ?)', [
                     session('user')['id'],
                     0,
                     $withdrawAmount,
                     Config::get('transaction.withdraw')
                 ]);
+
                 if ($result['affectedRows'] > 0) {
                     redirect(url('withdraw'), [
                         'status' => 'Withdraw request sent !'
@@ -826,33 +838,38 @@ class Pages {
     }
 
     public function getLogs() {
-        $data = static::load('Logs', 'Logs');
-        //get from database
-        $data['deposit'] = [
-            [
-                'amount' => 10000,
-                'date' => '06/03/2016',
-                'completed' => true
-            ],
-            [
-                'amount' => 20000,
-                'date' => '07/03/2016',
-                'completed' => false
-            ]
-        ];
+        Auth::check();
 
-        $data['withdraw'] = [
-            [
-                'amount' => 10000,
-                'date' => '06/03/2016',
-                'completed' => true
-            ],
-            [
-                'amount' => 20000,
-                'date' => '07/03/2016',
-                'completed' => false
-            ]
-        ];
+        $data = static::load('Logs', 'Logs');
+
+        $data['deposit'] = DB::query('select transactions.id, transactions.amount, transactions.date, transactions.completed from transactions where user_id = ? and type = ?', [
+            session('user')['id'],
+            Config::get('transaction.deposit')
+        ]);
+
+        $data['withdraw'] = DB::query('select transactions.id, transactions.amount, transactions.date, transactions.completed from transactions where user_id = ? and type = ?', [
+            session('user')['id'],
+            Config::get('transaction.withdraw')
+        ]);
+
         render('transitions.logs', $data);
+    }
+
+    public function reportLog($id) {
+        Auth::check();
+
+        $result = DB::query('insert into transactionreports (transaction_id) values (?)', [
+            $id
+        ]);
+
+        if (strstr($result, 'Duplicate entry') == false && $result['affectedRows'] > 0) {
+            redirect(url('logs'), [
+                'status' => 'Operation success !'
+            ]);
+        } else {
+            redirect(url('logs'), [
+                'status' => 'This transaction is already reported !'
+            ]);
+        }
     }
 }

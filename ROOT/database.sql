@@ -127,9 +127,7 @@ ON UPDATE NO ACTION)
 DROP TABLE IF EXISTS `appstore`.`transactionreports` ;
 
 CREATE TABLE IF NOT EXISTS `appstore`.`transactionreports` (
-`transaction_id` INT UNSIGNED NOT NULL,
-`note` VARCHAR(255) NOT NULL,
-`date` DATETIME NOT NULL,
+`transaction_id` INT UNSIGNED NOT NULL
 PRIMARY KEY (`transaction_id`),
 FOREIGN KEY (`transaction_id`)
 REFERENCES `appstore`.`transactions` (`id`)
