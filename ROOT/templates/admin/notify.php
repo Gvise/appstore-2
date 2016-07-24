@@ -20,21 +20,21 @@
                     Notify One
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action=<?= url('noti')?>>
+                    <form class="form-horizontal" method="post" action=<?= url('notification/send')?>>
                         <div class="form-group">
                             <label for="id" class="control-label col-sm-3">User</label>
                             <div class="col-sm-8">
                                 <select class="unround form-control" name="id">
                                 <?php foreach ($users as $key => $value): ?>
-                                    <option value=<?= $value['id'] ?>><?= $value['name'] ?></option>
+                                    <option value=<?= $value['id'] ?> <?= $value['id'] == $id ? 'selected' : '' ?>><?= $value['name'] ?></option>
                                 <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="contents" class="control-label col-sm-3">Content</label>
+                            <label for="content" class="control-label col-sm-3">Content</label>
                             <div class="col-sm-8">
-                                <textarea name="contents" class="unround form-control" placeholder="Content"></textarea>
+                                <textarea name="content" class="unround form-control" placeholder="Content"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -55,11 +55,15 @@
                     </form>
                 </div>
             </div>
+        <?php if (($error = with('error')) != null): ?>
             <div class="unround alert alert-danger">
                 <ul>
-                    <li>Error</li>
+                <?php foreach ($error as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
                 </ul>
             </div>
+        <?php endif; ?>
         </div>
         <div class="col-md-6">
             <br>
@@ -68,12 +72,12 @@
                     Notify All
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action=<?= url('noti')?>>
+                    <form class="form-horizontal" method="post" action=<?= url('notification/send')?>>
                         <input type="hidden" name="id" value="0">
                         <div class="form-group">
-                            <label for="contents" class="control-label col-sm-3">Content</label>
+                            <label for="content" class="control-label col-sm-3">Content</label>
                             <div class="col-sm-8">
-                                <textarea name="contents" class="unround form-control" placeholder="Content"></textarea>
+                                <textarea name="content" class="unround form-control" placeholder="Content"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -94,11 +98,15 @@
                     </form>
                 </div>
             </div>
+        <?php if (($errorAll = with('errorAll')) != null): ?>
             <div class="unround alert alert-danger">
                 <ul>
-                    <li>Error</li>
+                <?php foreach ($errorAll as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
                 </ul>
             </div>
+        <?php endif; ?>
         </div>
     </div>
 </div>

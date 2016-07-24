@@ -1,9 +1,4 @@
 <?php
-session('user', [
-	'id' => 1,
-	'name' => 'chan',
-	'type' => 3
-]);
 
 //Block Pages
 {
@@ -51,6 +46,7 @@ session('user', [
 	get('admin/transitionreports', 'Admin@getTransitonReports');
 	get('admin/inappropirate', 'Admin@getInappropirate');
 	get('admin/notify', 'Admin@getNotify');
+	get('user/delete/[:id]', 'Admin@getUserDelete');
 }
 
 //Block Tasks
@@ -60,6 +56,7 @@ session('user', [
 	post('admin/addplatform', 'Tasks@postAdminAddPlatform');
 	get('admin/delplatform/[:id]', 'Tasks@getAdminDelPlatform');
 
+	post('notification/send', 'Tasks@postNotificationSend');
 	post('myapps/statistics/filter', 'Tasks@filterStatistics');
 	get('notifications/clear', 'Tasks@clearNotifications');
 }

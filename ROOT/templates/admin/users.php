@@ -29,17 +29,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php for($i = 0; $i < count($developers); $i++): ?>
+                <?php for($i = 0; $i < count($admins); $i++): ?>
                     <tr>
                         <td><?= $i+1 ?></td>
                         <td><?= $admins[$i]['name'] ?></td>
                         <td><?= $admins[$i]['email'] ?></td>
                         <td><?= $admins[$i]['appcount'] ?></td>
                         <td>
-                            <div class="btn-group">
-                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
-                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
-                            </div>
+                            <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
+                            <a href=<?= url('user/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
                         </td>
                     </tr>
                 <?php endfor; ?>
@@ -74,10 +72,8 @@
                         <td><?= $users[$i]['name'] ?></td>
                         <td><?= $users[$i]['email'] ?></td>
                         <td>
-                            <div class="btn-group">
-                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
-                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
-                            </div>
+                            <a href=<?= url('admin/notify/?id=') . $users[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
+                            <a href=<?= url('user/delete/') . $users[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
                         </td>
                     </tr>
                 <?php endfor; ?>
@@ -102,7 +98,7 @@
                         <th>NO.</th>
                         <th>NAME</th>
                         <th>E-MAIL</th>
-                        <th>APP COUNT</th>
+                        <th>APPS</th>
                         <th><i class="glyphicon glyphicon-cog"></i></th>
                     </tr>
                 </thead>
@@ -114,10 +110,8 @@
                         <td><?= $developers[$i]['email'] ?></td>
                         <td><?= $developers[$i]['appcount'] ?></td>
                         <td>
-                            <div class="btn-group">
-                                <a href=<?= url('admin/notify/?id=') . $admins[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
-                                <a href=<?= url('users/delete/') . $admins[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
-                            </div>
+                            <a href=<?= url('admin/notify/?id=') . $developers[$i]['id'] ?> class="unround btn btn-info btn-xs"><small><i class="glyphicon glyphicon-info-sign"></i> NOTIFY</small></a>
+                            <a href=<?= url('user/delete/') . $developers[$i]['id'] ?> class="unround btn btn-danger btn-xs"><small><i class="glyphicon glyphicon-trash"></i> REMOVE</small></a>
                         </td>
                     </tr>
                 <?php endfor; ?>

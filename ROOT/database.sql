@@ -3,6 +3,22 @@ DROP SCHEMA IF EXISTS `appstore` ;
 CREATE SCHEMA IF NOT EXISTS `appstore` DEFAULT CHARACTER SET utf8 ;
 USE `appstore` ;
 
+DROP TABLE IF EXISTS `appstore`.`platforms` ;
+
+CREATE TABLE IF NOT EXISTS `appstore`.`platforms` (
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(45) NOT NULL,
+PRIMARY KEY (`id`))
+;
+
+DROP TABLE IF EXISTS `appstore`.`categories` ;
+
+CREATE TABLE IF NOT EXISTS `appstore`.`categories` (
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(45) NOT NULL,
+PRIMARY KEY (`id`))
+;
+
 DROP TABLE IF EXISTS `appstore`.`users` ;
 
 CREATE TABLE IF NOT EXISTS `appstore`.`users` (
@@ -52,6 +68,8 @@ DROP TABLE IF EXISTS `appstore`.`applications` ;
 CREATE TABLE IF NOT EXISTS `appstore`.`applications` (
 `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 `user_id` INT UNSIGNED NOT NULL,
+`category_id` INT UNSIGNED NOT NULL,
+`platform_id` INT UNSIGNED NOT NULL,
 `keyword` VARCHAR(255) NOT NULL,
 `rating` FLOAT,
 `updated_date` DATETIME NOT NULL,
@@ -59,9 +77,17 @@ CREATE TABLE IF NOT EXISTS `appstore`.`applications` (
 PRIMARY KEY (`id`),
 FOREIGN KEY (`user_id`)
 REFERENCES `appstore`.`users` (`id`)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION)
-;
+ON DELETE CASCADE
+ON UPDATE NO ACTION,
+FOREIGN KEY (`category_id`)
+REFERENCES `appstore`.`categories` (`id`)
+ON DELETE CASCADE
+ON UPDATE NO ACTION,
+FOREIGN KEY (`platform_id`)
+REFERENCES `appstore`.`platforms` (`id`)
+ON DELETE CASCADE
+ON UPDATE NO ACTION
+);
 
 DROP TABLE IF EXISTS `appstore`.`purchases` ;
 
@@ -183,54 +209,6 @@ ON DELETE CASCADE
 ON UPDATE NO ACTION)
 ;
 
-DROP TABLE IF EXISTS `appstore`.`platforms` ;
-
-CREATE TABLE IF NOT EXISTS `appstore`.`platforms` (
-`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(45) NOT NULL,
-PRIMARY KEY (`id`))
-;
-
-DROP TABLE IF EXISTS `appstore`.`categories` ;
-
-CREATE TABLE IF NOT EXISTS `appstore`.`categories` (
-`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(45) NOT NULL,
-PRIMARY KEY (`id`))
-;
-
-DROP TABLE IF EXISTS `appstore`.`appplatforms` ;
-
-CREATE TABLE IF NOT EXISTS `appstore`.`appplatforms` (
-`platform_id` INT UNSIGNED NOT NULL,
-`app_id` INT UNSIGNED NOT NULL,
-PRIMARY KEY (`platform_id`, `app_id`),
-FOREIGN KEY (`app_id`)
-REFERENCES `appstore`.`applications` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION,
-FOREIGN KEY (`platform_id`)
-REFERENCES `appstore`.`platforms` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION)
-;
-
-DROP TABLE IF EXISTS `appstore`.`appcategories` ;
-
-CREATE TABLE IF NOT EXISTS `appstore`.`appcategories` (
-`category_id` INT UNSIGNED NOT NULL,
-`app_id` INT UNSIGNED NOT NULL,
-PRIMARY KEY (`category_id`, `app_id`),
-FOREIGN KEY (`category_id`)
-REFERENCES `appstore`.`categories` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION,
-FOREIGN KEY (`app_id`)
-REFERENCES `appstore`.`applications` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION)
-;
-
 DROP TABLE IF EXISTS `appstore`.`screenshots` ;
 
 CREATE TABLE IF NOT EXISTS `appstore`.`screenshots` (
@@ -269,7 +247,6 @@ CREATE TABLE IF NOT EXISTS `appstore`.`notifications` (
 `user_id` INT UNSIGNED NOT NULL,
 `proirity` INT(11) NOT NULL,
 `content` LONGTEXT NOT NULL,
-`date` DATETIME NOT NULL,
 PRIMARY KEY (`id`),
 FOREIGN KEY (`user_id`)
 REFERENCES `appstore`.`users` (`id`)

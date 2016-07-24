@@ -15,14 +15,18 @@ class Database {
         return $this->pdo;
     }
 
-    public function query($query, array $bindings = Array(), $callable = null) {
-        $stmt = $this->connection()->prepare($query);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute($bindings);
+    public function query($query, array $bindings = Array()) {
+        try {
+            $stmt = $this->connection()->prepare($query);
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute($bindings);
+        } catch (PDOException $e) {
+            // echo 'ERROR: ' . $e->getMessage();
+            return $e->getMessage();
+        }
 
-        if(is_callable($callable)) {
-            call_user_func($callable, $stmt->rowCount() ,$stmt);
-            return;
+        if(!strstr($query, 'select')) {
+            return ['affectedRows' => $stmt->rowCount(),'lastId' =>  $this->connection()->lastInsertID()];
         }
 
         $results = $stmt->fetchAll();

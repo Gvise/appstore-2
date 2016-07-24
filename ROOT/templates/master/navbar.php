@@ -19,7 +19,7 @@
                 <i class="glyphicon glyphicon-bell"></i>
             </button>
             <div class="btn-group">
-                <a class="unround btn btn-default"><?= session('user')['name'] ?></a>
+                <a class="unround btn btn-default" href=<?= url('user') ?>><?= session('user')['name'] ?></a>
                 <a class="unround btn btn-default" data-toggle="tooltip" data-placement="left" title="Sign Out" href=<?= url('logout') ?>>
                     <i class="glyphicon glyphicon-off"></i>
                 </a>

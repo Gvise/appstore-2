@@ -1,4 +1,19 @@
 <?php
+function inputs($key = null) {
+    return Request::inputs($key);
+}
+
+function required($requiredKeys = array()) {
+    return Request::required($requiredKeys);
+}
+
+function encrypt($data) {
+    return Encryption::make($data, Config::get('security.enckey'));
+}
+
+function decrypt($data) {
+    return Encryption::decrypt($data, Config::get('security.enckey'));
+}
 
 function map($method, $url, $callback, $name = null) {
     App::map($method, $url, $callback, $name);

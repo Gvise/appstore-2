@@ -14,7 +14,7 @@
                     <div class="form-group">
                         <div class="input-group">
                             <div class="unround input-group-addon">Amount </div>
-                            <input type="text" class="unround form-control" name="deposit-amount">
+                            <input type="text" class="unround form-control" name="depositAmount">
                             <div class="unround input-group-addon"> MMK</div>
                         </div>
                     </div>

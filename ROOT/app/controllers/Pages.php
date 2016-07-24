@@ -597,43 +597,183 @@ class Pages {
     }
 
     public function getUser() {
+        Auth::check();
+        Auth::proirity(3);
+
         $data = static::load('Account Settings', 'Account Settings');
-        $data['name'] = 'Chan';
-        $data['email'] = 'chan@appstore.com';
-        $data['nrc'] = '9/KhaMaSa(N)057891';
-        $data['billingInfo'] = 'KBZ ATM NO 2344223455222';
-        $data['address'] = 'Mandalay';
+        $userInfos = DB::query('select profiles.name, users.email, profiles.nrc, profiles.billing_info as billingInfo, profiles.address from users, profiles where users.id = profiles.user_id and users.id = ?', [
+            session('user')['id']
+        ])[0];
+
+        $data = $data + $userInfos;
 
         render('user-settings', $data);
     }
 
     public function postUser() {
-        // update process
+        Auth::check();
+        Auth::proirity(3);
+
+        $error = required([
+            'name', 'email', 'nrc',
+            'billingInfo','address'
+        ]);
+
+        if(count($error) > 0) {
+            redirect(url('user'), [
+                'profileError' => $error
+            ]);
+            return;
+        }
+
+        $name = inputs('name');
+        $email = inputs('email');
+        $nrc = inputs('nrc');
+        $billingInfo = inputs('billingInfo');
+        $address = inputs('address');
+
+        $results = DB::query('update users set email = ? where id = ?', [
+            $email,
+            session('user')['id']
+        ]);
+
+        if(strstr($results, 'Duplicate entry') == false) {
+            $results = DB::query('update profiles set name = ?, nrc = ?, billing_info = ?, address = ? where user_id = ?', [
+                $name,
+                $nrc,
+                $billingInfo,
+                $address,
+                session('user')['id']
+            ]);
+
+            if(strstr($results, 'Duplicate entry') == false) {
+                redirect(url('user'), [
+                    'status' => 'Operation success !'
+                ]);
+                return;
+            } else {
+                $error[] = 'Duplicated NRC';
+            }
+        } else {
+            $error[] = 'Duplicated email';
+        }
+
         redirect(url('user'), [
-            'profileError' => ['Error1', 'Error2']
+            'profileError' => $error
         ]);
     }
 
     public function postUserPassword() {
-        // update process
-        redirect(url('user'), [
-            'passwordError' => ['Error1', 'Error2']
+        Auth::check();
+        Auth::proirity(3);
+
+        $error = required([
+            'oldPassword',
+            'password',
+            'confirmPassword'
         ]);
+
+        if(count($error) > 0) {
+            redirect(url('user'), [
+                'passwordError' => $error
+            ]);
+            return;
+        }
+
+        $oldPassword = inputs('oldPassword');
+        $password = inputs('password');
+        $confirmPassword = inputs('confirmPassword');
+
+        if($password != $confirmPassword) {
+            redirect(url('user'), [
+                'passwordError' => [
+                    'Confirm password do not match !'
+                ]
+            ]);
+            return;
+        }
+
+        $result = DB::query('select count(*) as count from users where password = ? and id = ?', [
+            encrypt($oldPassword),
+            session('user')['id']
+        ])[0]['count'];
+
+        if($result != 1) {
+            redirect(url('user'), [
+                'passwordError' => [
+                    'Password do not match !'
+                ]
+            ]);
+            return;
+        }
+
+        $result = DB::query('update users set password = ? where id= ?', [
+            encrypt($password),
+            session('user')['id']
+        ]);
+
+        if ($result['affectedRows'] > 0) {
+            redirect(url('user'), [
+                'status' => 'Operaton success !'
+            ]);
+        } else {
+            redirect(url('user'), [
+                'passwordError' => [
+                    'Something went wrong !',
+                    'Please try again.'
+                ]
+            ]);
+        }
     }
 
     public function getDeposit() {
+        Auth::check();
+
         $data = static::load('Deposit', 'Deposit');
-        $data['billingAddress'] = 'KBZ ATM: 1399303030303';
+        $data['billingAddress'] = DB::query('select profiles.billing_info as billingAddress from profiles, users where profiles.user_id = users.id and users.id = ?', [
+            session('user')['id']
+        ])[0]['billingAddress'];
         render('transitions.deposit', $data);
     }
 
     public function postDeposit() {
-        //do deposit process
+        Auth::check();
 
-        redirect(url('deposit'), [
-            'error' => ['e1', 'e2'],
-            'status' => 'Request Success!'
-        ]);
+        if(count($error = required([
+            'depositAmount'
+        ])) > 0) {
+            redirect(url('deposit'), [
+                'error' => $error
+            ]);
+        } else {
+            $depositAmount = inputs('depositAmount');
+
+            if($depositAmount < Config::get('mindeposit')) {
+                $error[]= 'Minimum deposit amount is 5000 MMK';
+                redirect(url('deposit'), [
+                    'error' => $error
+                ]);
+            } else {
+                // var_dump((new DateTime())->format('Y-m-d'));
+                $result = DB::query('insert into transactions (user_id, completed, date, amount, type) values(?,?,now(),?, ?)', [
+                    session('user')['id'],
+                    0,
+                    $depositAmount,
+                    Config::get('transaction.deposit')
+                ]);
+                if ($result['affectedRows'] > 0) {
+                    redirect(url('deposit'), [
+                        'status' => 'Deposit request sent !'
+                    ]);
+                } else {
+                    $error[]= 'Something went wrong !';
+                    $error[]= 'Please try again';
+                    redirect(url('deposit'), [
+                        'error' => $error
+                    ]);
+                }
+            }
+        }
     }
 
     public function getWithdraw() {
@@ -643,12 +783,46 @@ class Pages {
     }
 
     public function postWithdraw() {
-        //do withdraw process
+        Auth::check();
+        Auth::proirity(2);
 
-        redirect(url('withdraw'), [
-            'error' => ['e1', 'e2'],
-            'status' => 'Request Success!'
-        ]);
+        Auth::check();
+
+        if(count($error = required([
+            'withdrawAmount'
+        ])) > 0) {
+            redirect(url('withdraw'), [
+                'error' => $error
+            ]);
+        } else {
+            $withdrawAmount = inputs('withdrawAmount');
+
+            if($withdrawAmount < Config::get('minwithdraw')) {
+                $error[]= 'Minimum withdraw amount is 5000 MMK';
+                redirect(url('withdraw'), [
+                    'error' => $error
+                ]);
+            } else {
+                // var_dump((new DateTime())->format('Y-m-d'));
+                $result = DB::query('insert into transactions (user_id, completed, date, amount, type) values(?,?,now(),?, ?)', [
+                    session('user')['id'],
+                    0,
+                    $withdrawAmount,
+                    Config::get('transaction.withdraw')
+                ]);
+                if ($result['affectedRows'] > 0) {
+                    redirect(url('withdraw'), [
+                        'status' => 'Withdraw request sent !'
+                    ]);
+                } else {
+                    $error[]= 'Something went wrong !';
+                    $error[]= 'Please try again';
+                    redirect(url('withdraw'), [
+                        'error' => $error
+                    ]);
+                }
+            }
+        }
     }
 
     public function getLogs() {

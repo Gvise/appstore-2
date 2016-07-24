@@ -2,9 +2,19 @@
 class Request {
     public static function inputs($key = null) {
         if($key == null)
-            return $_SERVE['REQUET_METHOD'] == 'GET' ? $_GET : $_POST;
-        if(isset($_GET[$key])) return $_GET[$key];
-        if(isset($_POST[$key])) return $_POST[$key];
+            return $_REQUEST;
+        if(isset($_REQUEST[$key])) return $_REQUEST[$key];
         return null;
+    }
+
+    public static function required($requiredKeys = array()) {
+        $error = [];
+        foreach ($requiredKeys as $value) {
+            if(static::inputs($value) == "") {
+                $error[] = $value . ' required !';
+            }
+        }
+
+        return $error;
     }
 }

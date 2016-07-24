@@ -30,13 +30,13 @@
                 <div class="form-group">
                     <lable for="billing-info" class="control-label col-sm-2">Billing Info</lable>
                     <div class="col-sm-10">
-                        <textarea name="billing-info" class="unround form-control" placeholder="Billing Informations"><?= isset($billingInfo) ? $billingInfo : null ?></textarea>
+                        <textarea name="billingInfo" class="unround form-control" placeholder="Billing Informations"><?= isset($billingInfo) ? $billingInfo : null ?></textarea>
                     </div>
                 </div>
                 <div class="form-group">
                     <lable for="Address" class="control-label col-sm-2">Address</lable>
                     <div class="col-sm-10">
-                        <textarea name="Address" class="unround form-control" placeholder="Address"><?= isset($address) ? $address : null ?></textarea>
+                        <textarea name="address" class="unround form-control" placeholder="Address"><?= isset($address) ? $address : null ?></textarea>
                     </div>
                 </div>
                 <button type="submit" class="unround btn btn-default pull-right" style="width:100%"><i class="glyphicon glyphicon-ok"> Save</i></button>
@@ -57,21 +57,21 @@
                 <p><i class="glyphicon glyphicon-cog"></i> <b>Password Setting</b></p>
                 <hr>
                 <div class="form-group">
-                    <lable for="old-password" class="control-label col-sm-4">Old Password</lable>
+                    <lable for="oldPassword" class="control-label col-sm-4">Old Password</lable>
                     <div class="col-sm-8">
-                        <input type="text" name="old-password" class="unround form-control" placeholder="Old Password">
+                        <input type="password" name="oldPassword" class="unround form-control" placeholder="Old Password">
                     </div>
                 </div>
                 <div class="form-group">
                     <lable for="password" class="control-label col-sm-4">New Password</lable>
                     <div class="col-sm-8">
-                        <input type="text" name="password" class="unround form-control" placeholder="New Password">
+                        <input type="password" name="password" class="unround form-control" placeholder="New Password">
                     </div>
                 </div>
                 <div class="form-group">
-                    <lable for="password-confirmation" class="control-label col-sm-4">Confirm Password</lable>
+                    <lable for="confirmPassword" class="control-label col-sm-4">Confirm Password</lable>
                     <div class="col-sm-8">
-                        <input type="text" name="password-confirmation" class="unround form-control" placeholder="Confirm Password">
+                        <input type="password" name="confirmPassword" class="unround form-control" placeholder="Confirm Password">
                     </div>
                 </div>
                 <button type="submit" class="unround btn btn-default pull-right" style="width:100%"><i class="glyphicon glyphicon-ok"> Update</i></button>

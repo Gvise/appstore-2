@@ -15,11 +15,15 @@
         </ul>
         <br>
         <div class="col-md-4">
+        <?php if (($error = with('error')) != null): ?>
             <div class="unround alert alert-danger">
                 <ul>
-                    <li>Error</li>
+                <?php foreach ($error as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
                 </ul>
             </div>
+        <?php endif; ?>
 
             <div class="unround panel panel-default">
                 <div class="panel-heading">
@@ -55,6 +59,7 @@
             </div>
         </div>
         <div class="col-md-4">
+        <?php if(isset($mainCategories)): ?>
             <table class="table table-hover table-condensed">
                 <caption>Categories</caption>
                 <thead>
@@ -66,18 +71,37 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach ($mainCategories as $key => $value): ?>
                     <tr>
-                        <td>Strategy</td>
-                        <td><i class="glyphicon glyphicon-ok"></i></td>
-                        <td><span class="badge">10</span></td>
+                        <td><?= str_replace('G_', '', $value['name']) ?></td>
                         <td>
-                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/category/delcategory/catid') ?>></a>
+                            <?php if (strstr($value['name'], 'G_')): ?>
+                                <i class="glyphicon glyphicon-ok"></i>
+                            <?php else: ?>
+                                <i class="glyphicon glyphicon-remove"></i>
+                            <?php endif; ?>
+                        </td>
+                        <td><span class="badge"> <?= $value['count'] ?> </span></td>
+                        <td>
+                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/delcategory/' . $value['id']) ?>></a>
                         </td>
                     </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php else: ?>
+            <table class="table table-hover table-condensed">
+                <caption>Categories</caption>
+                <thead>
+                    <tr>
+                        <th>NO RECORDS</th>
+                    </tr>
+                </thead>
+            </table>
+        <?php endif ?>
         </div>
         <div class="col-md-4">
+        <?php if(isset($mainPlatforms)): ?>
             <table class="table table-hover table-condensed">
                 <caption>Platforms</caption>
                 <thead>
@@ -88,15 +112,27 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach ($mainPlatforms as $key => $value): ?>
                     <tr>
-                        <td>Windows</td>
-                        <td><span class="badge">10</span></td>
+                        <td><?= $value['name'] ?></td>
+                        <td><span class="badge"> <?= $value['count'] ?> </span></td>
                         <td>
-                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/category/delplatform/catid') ?>></a>
+                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/delplatform/' . $value['id']) ?>></a>
                         </td>
                     </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php else: ?>
+            <table class="table table-hover table-condensed">
+                <caption>Platforms</caption>
+                <thead>
+                    <tr>
+                        <th>NO RECORDS</th>
+                    </tr>
+                </thead>
+            </table>
+        <?php endif ?>
         </div>
     </div>
 </div>
