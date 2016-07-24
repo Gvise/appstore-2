@@ -33,13 +33,21 @@
             <p class="text-info notifications-toggle">Notifications <a class="pull-right btn btn-xs btn-default">Close</a></p>
             <hr class="custom-divider">
             <ul class="nav">
+        <?php if (isset($notifications)): ?>
             <?php foreach ($notifications as $key => $value) : ?>
-                <li><a href="#"><?=$value?></a></li>
+                <?php if ($value['proirity'] == 1): ?>
+                    <li class="bg-danger"><a href="#"><?=$value['content']?></a></li>
+                <?php elseif ($value['proirity'] == 2): ?>
+                    <li class="bg-warning"><a href="#"><?=$value['content']?></a></li>
+                <?php else: ?>
+                    <li><a href="#"><?=$value['content']?></a></li>
+                <?php endif ?>
             <?php endforeach; ?>
             </ul>
             <div style="position:absolute;bottom:0;width:100%">
                 <a class="btn btn-default btn-xs unround" style="width:inherit;" href=<?= url('notifications/clear') ?>>Clear All</a>
             </div>
+        <?php endif; ?>
         </div>
     <?php endif; ?>
     </div>

@@ -4,6 +4,7 @@
 {
 	get('/', 'Pages@getIndex');
 	get('home', 'Pages@getHome');
+	get('changeplatform/[:id]', 'Pages@getChangePlatform');
 	get('newreleases','Pages@getNewReleases');
 	get('search', 'Pages@getSearch');
 	get('wishlist', 'Pages@getWishlist');

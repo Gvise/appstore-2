@@ -5,17 +5,25 @@ class Pages {
     	$title = Config::get('title');
     	$subtitle = $stitle;
 
-        //get categories and notifications from db;
-        $wishlistCount = 8;
-    	$categories = [
-            [ 'id' => 1, 'name' => 'Category 1']
-        ];
+        $platforms = DB::query('select * from platforms');
+        session('platforms', $platforms);
+        if (session('currentPlatform') == null) {
+            session('currentPlatform', $platforms[0]);
+        }
 
-        $categoryGames = [
-            [ 'id' => 2, 'name' => 'G_Category 1']
-        ];
-
-    	$notifications = ['adsfsdfasdf'];
+        $wishlistCount = DB::query('select count(*) as count from wishlist where user_id = ?', [session('user')['id']])[0]['count'];
+        $categories = DB::query('select * from categories where name not like ?', [
+            'G_%',
+        ]);
+        $categoryGames= DB::query('select * from categories where name like ?', [
+            'G_%',
+        ]);
+    	$notifications = DB::query('select * from notifications where user_id = ? order by proirity', [
+            session('user')['id']
+        ]);
+        $accountBalance = DB::query('select balance from profiles where user_id = ?', [
+            session('user')['id']
+        ])[0]['balance'];
 
         switch ($page) {
             case 'home':
@@ -33,12 +41,22 @@ class Pages {
     	return compact (
             'title', 'subtitle', 'categories','wishlistCount',
             'categoryGames', 'notifications', 'selectHome',
-            'selectNewReleases', 'currentPage'
+            'selectNewReleases', 'currentPage', 'accountBalance'
         );
     }
 
     public function getIndex() {
         redirect(url('home'));
+    }
+
+    public function getChangePlatform($id) {
+        foreach (session('platforms') as $key => $value) {
+            if ($value['id'] == $id) {
+                session('currentPlatform', session('platforms')[$key]);
+            }
+        }
+
+        redirect(url(''));
     }
 
     public function getHome() {

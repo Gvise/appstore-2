@@ -5,16 +5,20 @@
         <a href=""><?=$title ?></a>
     </div>
 
+<?php if (session('platforms') != null): ?>
     <ul class="nav nav-stacked sidebar-p-nav">
         <li role="presentation">
-            <a data-toggle="collapse" href="#collapse-platform" style="background-color: white;">Android Apps <i class="glyphicon glyphicon-chevron-down"></i></a>
+            <a data-toggle="collapse" href="#collapse-platform" style="background-color: white;"><?= session('currentPlatform')['name'] ?> <i class="glyphicon glyphicon-chevron-down"></i></a>
+    <?php foreach (session('platforms') as $key => $value): ?>
+        <?php if ($value['id'] != session('currentPlatform')['id']): ?>
             <ul class="nav nav-stacked sidebar-p-nav collapse" id="collapse-platform">
-                <li><a href="">Windows Apps</a></li>
-                <li><a href="">Linux Apps</a></li>
+                <li><a href=<?= url('changeplatform/'. $value['id']) ?>> <?= $value['name'] ?></a></li>
             </ul>
+        <?php endif; ?>
+    <?php endforeach; ?>
         </li>
     </ul>
-
+<?php endif; ?>
     <ul class="nav nav-stacked">
         <li role="presentation" class="h-collapse-opener" data-target="#collapse-categories">
             <a class="categories">
@@ -30,9 +34,6 @@
             <a href=<?= url('myapps') ?>>
                 <i class="glyphicon glyphicon-th-large"></i>
                 <b>My Apps</b>
-                <?php if(isset($myAppCount)) : ?>
-                <span class="pull-right badge"><?=$myAppCount?></span>
-                <?php endif; ?>
             </a>
         </li>
 
