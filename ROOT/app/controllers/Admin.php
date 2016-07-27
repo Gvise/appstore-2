@@ -6,56 +6,100 @@ class Admin {
     }
 
     public function getUserDelete($id) {
-        $result = DB::query('delete from users where id = ?', [$id]);
-        // var_dump($result);return;
-        if($result['affectedRows'] > 0) {
-            redirect(url('admin'), [
+        try {
+            $result = DB::exec(
+                QB::table('users')
+                    ->delete()
+                    ->where('id', $id)
+            );
+
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            return;
+        }
+
+        if($result->affectedRows > 0) {
+            redirect('admin', [
                 'status' => 'User deletion success !'
             ]);
         } else {
-            redirect(url('admin'), [
+            redirect('admin', [
                 'status' => 'Error ! Something went wrong.'
             ]);
         }
     }
 
     public function getUsers() {
+        try {
+            $data = Pages::load('Users', 'Users');
 
-        $data = Pages::load('Users', 'Users');
+            $data['users'] = DB::exec(
+                QB::table('users')
+                    ->select('users.id, profiles.name, users.email')
+                    ->innerJoin('profiles')
+                    ->on('users.id', 'profiles.user_id')
+                    ->where('users.type', 1)
+            );
 
-        $query = 'select users.id, profiles.name, users.email from users, profiles where users.id = profiles.user_id and users.type = ?';
-        $data['users'] = DB::query($query, [1]);
+            $data['developers'] = DB::exec(
+                QB::table('users')
+                    ->select('users.id, profiles.name, users.email')
+                    ->innerJoin('profiles')
+                    ->on('users.id', 'profiles.user_id')
+                    ->where('users.type', 2)
+            );
 
-        $query = 'select users.id, profiles.name, users.email from users, profiles where users.id = profiles.user_id and users.type = ?';
-        $data['developers'] = DB::query($query, [2]);
+            for ($i=0; $i < count($data['developers']); $i++) {
+                $id = $data['developers'][$i]->id;
 
-        for ($i=0; $i < count($data['developers']); $i++) {
-            $id = $data['developers'][$i]['id'];
-            $data['developers'][$i]['appcount'] = DB::query('select count(*) as count from applications where user_id = ?', [$id])[0]['count'];
+                $query = new Query('applications');
+                $query->select('count(*) as count')
+                    ->where('user_id', $id);
+                $data['developers'][$i]->appcount = DB::exec($query)[0]->count;
+            }
+
+            $query = QB::table('users')
+                ->select('users.id, profiles.name, users.email')
+                ->innerJoin('profiles')
+                ->on('users.id', 'profiles.user_id')
+                ->where('users.type', 3);
+
+            if (session('user')->id != 1) {
+                $query->and()->where('users.id', '<>', 1);
+            }
+
+            $data['admins'] = DB::exec($query);
+
+            for ($i=0; $i < count($data['admins']); $i++) {
+                $id = $data['admins'][$i]->id;
+
+                $query = new Query('applications');
+                $query->select('count(*) as count')
+                    ->where('user_id', $id);
+                $data['admins'][$i]->appcount = DB::exec($query)[0]->count;
+            }
+
+            render('admin.users', $data);
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
-
-        $query = 'select users.id, profiles.name, users.email from users, profiles where users.id = profiles.user_id and users.type = ? and users.id <> 1';
-        if (session('user')['id'] == 1) {
-            $query = 'select users.id, profiles.name, users.email from users, profiles where users.id = profiles.user_id and users.type = ?';
-        }
-
-        $data['admins'] = DB::query($query, [3]);
-        for ($i=0; $i < count($data['admins']); $i++) {
-            $id = $data['admins'][$i]['id'];
-            $data['admins'][$i]['appcount'] = DB::query('select count(*) as count from applications where user_id = ?', [$id])[0]['count'];
-        }
-
-        // var_dump($data['admins']); die();
-
-        render('admin.users', $data);
     }
 
     public function getNotify() {
         $data = Pages::load('Notify', 'Notify');
-        //get from db
+
         $data['id'] = Request::inputs('id');
 
-        $data['users'] = DB::query('select users.id, profiles.name from users, profiles where users.id = profiles.user_id');
+        try {
+            $data['users'] = DB::exec(
+                QB::table('users')
+                    ->select('users.id, profiles.name')
+                    ->innerJoin('profiles')
+                    ->on('users.id', 'profiles.user_id')
+            );
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
 
         render('admin.notify', $data);
     }

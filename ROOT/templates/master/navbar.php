@@ -19,7 +19,7 @@
                 <i class="glyphicon glyphicon-bell"></i>
             </button>
             <div class="btn-group">
-                <a class="unround btn btn-default" href=<?= url('user') ?>><?= session('user')['name'] ?></a>
+                <a class="unround btn btn-default" href=<?= url('user') ?>><?= session('user')->name ?></a>
                 <a class="unround btn btn-default" data-toggle="tooltip" data-placement="left" title="Sign Out" href=<?= url('logout') ?>>
                     <i class="glyphicon glyphicon-off"></i>
                 </a>
@@ -35,12 +35,12 @@
             <ul class="nav">
         <?php if (isset($notifications)): ?>
             <?php foreach ($notifications as $key => $value) : ?>
-                <?php if ($value['proirity'] == 1): ?>
-                    <li class="bg-danger"><a href="#"><?=$value['content']?></a></li>
-                <?php elseif ($value['proirity'] == 2): ?>
-                    <li class="bg-warning"><a href="#"><?=$value['content']?></a></li>
+                <?php if ($value->proirity == 1): ?>
+                    <li class="bg-danger"><a href="#"><?=$value->content ?></a></li>
+                <?php elseif ($value->proirity == 2): ?>
+                    <li class="bg-warning"><a href="#"><?=$value->content ?></a></li>
                 <?php else: ?>
-                    <li><a href="#"><?=$value['content']?></a></li>
+                    <li><a href="#"><?=$value->content ?></a></li>
                 <?php endif ?>
             <?php endforeach; ?>
             </ul>

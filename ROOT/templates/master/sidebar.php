@@ -8,11 +8,11 @@
 <?php if (session('platforms') != null): ?>
     <ul class="nav nav-stacked sidebar-p-nav">
         <li role="presentation">
-            <a data-toggle="collapse" href="#collapse-platform" style="background-color: white;"><?= session('currentPlatform')['name'] ?> <i class="glyphicon glyphicon-chevron-down"></i></a>
+            <a data-toggle="collapse" href="#collapse-platform" style="background-color: white;"><?= session('currentPlatform')->name ?> <i class="glyphicon glyphicon-chevron-down"></i></a>
     <?php foreach (session('platforms') as $key => $value): ?>
-        <?php if ($value['id'] != session('currentPlatform')['id']): ?>
+        <?php if ($value->id != session('currentPlatform')->id): ?>
             <ul class="nav nav-stacked sidebar-p-nav collapse" id="collapse-platform">
-                <li><a href=<?= url('changeplatform/'. $value['id']) ?>> <?= $value['name'] ?></a></li>
+                <li><a href=<?= url('changeplatform/'. $value->id) ?>> <?= $value->name ?></a></li>
             </ul>
         <?php endif; ?>
     <?php endforeach; ?>
@@ -65,7 +65,7 @@
         </li>
 
     <!--  allows only develover or above-->
-    <?php if (session('user')['type'] >= 2): ?>
+    <?php if (session('user')->type >= 2): ?>
         <li role="presentation">
             <a href=<?= url('withdraw') ?>><i class="glyphicon glyphicon-collapse-up"></i> Withdraw</a>
         </li>
@@ -76,7 +76,7 @@
         </li>
 
         <!--  allows only admin-->
-    <?php if (session('user')['type'] == 3): ?>
+    <?php if (session('user')->type == 3): ?>
         <hr class="custom-divider">
         <li role="presentation">
             <a href=<?= url('admin') ?>><i class="glyphicon glyphicon-cog"></i> Administration</a>
@@ -96,7 +96,7 @@
     <div>
         <ul class="nav nav-stacked">
             <?php foreach ($categories as $key => $value) : ?>
-            <li><a href=<?= url('categories/'. $value['id']) ?>><?= $value['name']?></a></li>
+            <li><a href=<?= url('categories/'. $value->id) ?>><?= $value->name ?></a></li>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -105,7 +105,7 @@
         <hr class="custom-divider">
         <ul class="nav nav-stacked">
             <?php foreach ($categoryGames as $key => $value) : ?>
-            <li><a href=<?= url('categories/'. $value['id']) ?>><?=str_replace('G_', '', $value['name'])?></a></li>
+            <li><a href=<?= url('categories/'. $value->id) ?>><?=str_replace('G_', '', $value->name)?></a></li>
             <?php endforeach; ?>
         </ul>
     </div>

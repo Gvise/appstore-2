@@ -87,7 +87,7 @@ class Query {
         return $this;
     }
 
-    public function update($fields, $values = array()) {
+    public function update($fields, $values) {
         if (is_array($fields)) {
             $fieldsString = '';
             foreach ($fields as $key => $value) {
@@ -110,6 +110,12 @@ class Query {
             }
         }
 
+        if (!is_array($values)) {
+            $valuesForBinding = func_get_args();
+            unset($valuesForBinding[0]);
+            $values = $valuesForBinding;
+        }
+        
         $this->queryString = 'update ' . $this->table . ' set ' . $fields;
         $this->bindings = array_merge($this->bindings, $values);
 

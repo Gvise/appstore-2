@@ -2,61 +2,85 @@
 class Pages {
 
     public static function load($stitle, $page) {
-    	$title = Config::get('title');
-    	$subtitle = $stitle;
+        try {
+            $title = Config::get('title');
+        	$subtitle = $stitle;
 
-        $platforms = DB::query('select * from platforms');
-        session('platforms', $platforms);
-        if (session('currentPlatform') == null) {
-            session('currentPlatform', $platforms[0]);
+            $platforms = DB::exec(
+                QB::table('platforms')
+                    ->select()
+            );
+            session('platforms', $platforms);
+            if (session('currentPlatform') == null) {
+                session('currentPlatform', $platforms[0]);
+            }
+
+            $wishlistCount = DB::exec(
+                QB::table('wishlist')
+                    ->select('count(*) as count')
+                    ->where('user_id', session('user')->id)
+            )[0]->count;
+
+            $categories = DB::exec(
+                QB::table('categories')
+                    ->select()
+                    ->where('name', 'NOT LIKE', 'G_%')
+            );
+
+            $categoryGames = DB::exec(
+                QB::table('categories')
+                    ->select()
+                    ->where('name', 'LIKE', 'G_%')
+            );
+
+            $notifications = DB::exec(
+                QB::table('notifications')
+                    ->select()
+                    ->where('user_id', session('user')->id)
+                    ->orderBy('proirity')
+            );
+
+            $accountBalance = DB::exec(
+                QB::table('profiles')
+                    ->select('balance')
+                    ->where('user_id', session('user')->id)
+            )[0]->balance;
+
+            switch ($page) {
+                case 'home':
+                    $selectHome = 'custom-active';
+                    break;
+                case 'newreleases':
+                    $selectNewReleases = 'custom-active';
+                    break;
+
+                default:
+                    $currentPage = $page;
+                    break;
+            }
+
+        	return compact (
+                'title', 'subtitle', 'categories','wishlistCount',
+                'categoryGames', 'notifications', 'selectHome',
+                'selectNewReleases', 'currentPage', 'accountBalance'
+            );
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
-
-        $wishlistCount = DB::query('select count(*) as count from wishlist where user_id = ?', [session('user')['id']])[0]['count'];
-        $categories = DB::query('select * from categories where name not like ?', [
-            'G_%',
-        ]);
-        $categoryGames= DB::query('select * from categories where name like ?', [
-            'G_%',
-        ]);
-    	$notifications = DB::query('select * from notifications where user_id = ? order by proirity', [
-            session('user')['id']
-        ]);
-        $accountBalance = DB::query('select balance from profiles where user_id = ?', [
-            session('user')['id']
-        ])[0]['balance'];
-
-        switch ($page) {
-            case 'home':
-                $selectHome = 'custom-active';
-                break;
-            case 'newreleases':
-                $selectNewReleases = 'custom-active';
-                break;
-
-            default:
-                $currentPage = $page;
-                break;
-        }
-
-    	return compact (
-            'title', 'subtitle', 'categories','wishlistCount',
-            'categoryGames', 'notifications', 'selectHome',
-            'selectNewReleases', 'currentPage', 'accountBalance'
-        );
     }
 
     public function getIndex() {
-        redirect(url('home'));
+        redirect('home');
     }
 
     public function getChangePlatform($id) {
         foreach (session('platforms') as $key => $value) {
-            if ($value['id'] == $id) {
+            if ($value->id == $id) {
                 session('currentPlatform', session('platforms')[$key]);
             }
         }
 
-        redirect(url(''));
+        redirect('');
     }
 
     public function getHome() {
@@ -616,13 +640,22 @@ class Pages {
 
     public function getUser() {
         Auth::check();
-
         $data = static::load('Account Settings', 'Account Settings');
-        $userInfos = DB::query('select profiles.name, users.email, profiles.nrc, profiles.billing_info as billingInfo, profiles.address from users, profiles where users.id = profiles.user_id and users.id = ?', [
-            session('user')['id']
-        ])[0];
 
-        $data = $data + $userInfos;
+        try {
+            $userInfos = DB::exec(
+                QB::table('users')
+                    ->select('profiles.name, users.email, profiles.nrc, profiles.billing_info as billingInfo, profiles.address')
+                    ->innerJoin('profiles')
+                    ->on('users.id', 'profiles.user_id')
+                    ->where('users.id', session('user')->id)
+            )[0];
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            return;
+        }
+
+        $data = $data + get_object_vars($userInfos);
 
         render('user-settings', $data);
     }
@@ -635,9 +668,9 @@ class Pages {
             'billingInfo','address'
         ]);
 
-        if(count($error) > 0) {
+        if($error->hasError) {
             redirect(url('user'), [
-                'profileError' => $error
+                'profileError' => $error->content
             ]);
             return;
         }
@@ -648,34 +681,34 @@ class Pages {
         $billingInfo = inputs('billingInfo');
         $address = inputs('address');
 
-        $results = DB::query('update users set email = ? where id = ?', [
-            $email,
-            session('user')['id']
-        ]);
-
-        if(strstr($results, 'Duplicate entry') == false) {
-            $results = DB::query('update profiles set name = ?, nrc = ?, billing_info = ?, address = ? where user_id = ?', [
-                $name,
-                $nrc,
-                $billingInfo,
-                $address,
-                session('user')['id']
+        try {
+            DB::exec(
+                QB::table('users')
+                    ->update('email', $email)
+                    ->where('id', session('user')->id)
+            );
+        } catch (Exception $e) {
+            redirect('user', [
+                'profileError' => ['Email already exists.']
             ]);
-
-            if(strstr($results, 'Duplicate entry') == false) {
-                redirect(url('user'), [
-                    'status' => 'Operation success !'
-                ]);
-                return;
-            } else {
-                $error[] = 'Duplicated NRC';
-            }
-        } else {
-            $error[] = 'Duplicated email';
+            return;
         }
 
-        redirect(url('user'), [
-            'profileError' => $error
+        try {
+            DB::exec(
+                QB::table('profiles')
+                    ->update('name, nrc, billing_info, address', $name, $nrc, $billingInfo, $address)
+                    ->where('user_id', session('user')->id)
+            );
+        } catch (Exception $e) {
+            redirect('user', [
+                'profileError' => ['NRC already exists']
+            ]);
+            return;
+        }
+
+        redirect('user', [
+            'status' => 'Operation success !'
         ]);
     }
 
@@ -688,9 +721,9 @@ class Pages {
             'confirmPassword'
         ]);
 
-        if(count($error) > 0) {
-            redirect(url('user'), [
-                'passwordError' => $error
+        if($error->hasError) {
+            redirect('user', [
+                'passwordError' => $error->content
             ]);
             return;
         }
@@ -700,7 +733,7 @@ class Pages {
         $confirmPassword = inputs('confirmPassword');
 
         if($password != $confirmPassword) {
-            redirect(url('user'), [
+            redirect('user', [
                 'passwordError' => [
                     'Confirm password do not match !'
                 ]
@@ -708,13 +741,25 @@ class Pages {
             return;
         }
 
-        $result = DB::query('select count(*) as count from users where password = ? and id = ?', [
-            encrypt($oldPassword),
-            session('user')['id']
-        ])[0]['count'];
+        try {
+            $result = DB::exec(
+                QB::table('users')
+                ->select('count(*) as count')
+                ->where('password', encrypt($oldPassword))
+                ->and()
+                ->where('id', session('user')->id)
+            )[0]->count;
+        } catch (Exception $e) {
+            redirect('user', [
+                'passwordError' => [
+                    'Something went wrong !',
+                    'Please try again.'
+                ]
+            ]);
+        }
 
         if($result != 1) {
-            redirect(url('user'), [
+            redirect('user', [
                 'passwordError' => [
                     'Password do not match !'
                 ]
@@ -722,17 +767,27 @@ class Pages {
             return;
         }
 
-        $result = DB::query('update users set password = ? where id= ?', [
-            encrypt($password),
-            session('user')['id']
-        ]);
+        try {
+            $result = DB::exec(
+                QB::table('users')
+                ->update('password', encrypt($password))
+                ->where('id', session('user')->id)
+            );
+        } catch (Exception $e) {
+            redirect('user', [
+                'passwordError' => [
+                    'Something went wrong !',
+                    'Please try again.'
+                ]
+            ]);
+        }
 
-        if ($result['affectedRows'] > 0) {
-            redirect(url('user'), [
+        if ($result->affectedRows > 0) {
+            redirect('user', [
                 'status' => 'Operaton success !'
             ]);
         } else {
-            redirect(url('user'), [
+            redirect('user', [
                 'passwordError' => [
                     'Something went wrong !',
                     'Please try again.'
