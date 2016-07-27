@@ -616,7 +616,6 @@ class Pages {
 
     public function getUser() {
         Auth::check();
-        Auth::proirity(3);
 
         $data = static::load('Account Settings', 'Account Settings');
         $userInfos = DB::query('select profiles.name, users.email, profiles.nrc, profiles.billing_info as billingInfo, profiles.address from users, profiles where users.id = profiles.user_id and users.id = ?', [
@@ -630,7 +629,6 @@ class Pages {
 
     public function postUser() {
         Auth::check();
-        Auth::proirity(3);
 
         $error = required([
             'name', 'email', 'nrc',
@@ -683,7 +681,6 @@ class Pages {
 
     public function postUserPassword() {
         Auth::check();
-        Auth::proirity(3);
 
         $error = required([
             'oldPassword',

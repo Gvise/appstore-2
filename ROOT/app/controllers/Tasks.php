@@ -2,7 +2,6 @@
 class Tasks {
     public function clearNotifications() {
         Auth::check();
-        Auth::proirity(3);
 
         $id = session('user')['id'];
         $results = DB::query('delete from notifications where user_id = ?', [

@@ -1,5 +1,14 @@
 <?php
 
+get('/zz', function() {
+	try {
+		echo $foo;
+	} catch (Exception $e) {
+		echo 'df';
+		echo $e->getMessage();
+	}
+
+});
 //Block Pages
 {
 	get('/', 'Pages@getIndex');
@@ -37,7 +46,8 @@
 	get('myapps/statistics/today', 'MyApps@getStatsToday');
 	get('myapps/statistics/week', 'MyApps@getStatsThisWeek');
 	get('myapps/statistics/month', 'MyApps@getStatsThisMonth');
-	get('myapp/publish', 'MyApps@getPublish');
+	get('myapps/publish', 'MyApps@getPublish');
+	post('myapps/publish', 'MyApps@postPublish');
 }
 
 // Block Admin

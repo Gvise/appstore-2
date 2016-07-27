@@ -18,5 +18,9 @@ return [
     'transaction' => [
         'deposit' => 1,
         'withdraw' => 2
-    ]
+    ],
+
+    'iconpath' => 'storage/icons/',
+    'sspath' => 'storage/screenshots/',
+    'apppath' => 'storage/applications/'
 ];

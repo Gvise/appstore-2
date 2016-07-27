@@ -3,14 +3,14 @@ class Auth {
     public static function check($reverse = false) {
         if($reverse) {
             if (session('user') != null) {
-                redirect(url(''));
+                redirect('');
                 exit();
             }
             return;
         }
 
         if(session('user') == null) {
-            redirect(url(''), [
+            redirect('', [
                 'status' => 'Please Log In !'
             ]);
             exit();
@@ -21,7 +21,7 @@ class Auth {
         switch ($proirity) {
             case 3:
                 if(session('user')['type'] != 3) {
-                    redirect(url(''), [
+                    redirect('', [
                         'status' => 'You are not an administrator !'
                     ]);
                     exit();
@@ -30,7 +30,7 @@ class Auth {
 
             case 2:
                 if(session('user')['type'] != 3) {
-                    redirect(url(''), [
+                    redirect('', [
                         'status' => 'You are not a developer !'
                     ]);
                     exit();
@@ -49,30 +49,39 @@ class Auth {
 
     public function postLogin() {
         Auth::check(true);
-        //Log In Error တက်ရင် loginOnly => 1 နဲ့ Redirect လုပ်ပေး
         $error = required([
             'email',
             'password'
         ]);
 
-        if(count($error) > 0) {
-            redirect(url('join'), [
+        if($error->hasError) {
+            redirect('join', [
                 'loginOnly' => 1,
-                'lerror' => $error
+                'lerror' => $error->content
             ]);
             return;
         }
 
         $email = inputs('email');
         $password = encrypt(inputs('password'));
-        $query = 'select users.*,profiles.name from users, profiles where users.email=? and users.password=? and users.id = profiles.user_id';
-        $results = DB::query($query, [
-            $email,
-            $password
-        ]);
+
+        $query = new Query('users');
+        $query->select('users.*, profiles.name')
+              ->innerJoin('profiles')
+              ->on('users.id', 'profiles.user_id')
+              ->where('users.email',$email)
+              ->and()
+              ->where('users.password', $password);
+
+        try {
+            $results = DB::exec($query);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            exit();
+        }
 
         if($results == null) {
-            redirect(url('join'), [
+            redirect('join', [
                 'loginOnly' => 1,
                 'lerror' => [
                     'Incorrect username and password.'
@@ -82,10 +91,10 @@ class Auth {
         }
 
         $user = $results[0];
-        unset($user['password']);
+        unset($user->password);
 
         session('user', $user);
-        redirect(url(''));
+        redirect('');
     }
 
     public function postRegister() {
@@ -100,9 +109,9 @@ class Auth {
             'address'
         ]);
 
-        if(count($error) > 0) {
-            redirect(url('join'), [
-                'rerror' => $error
+        if($error->hasError) {
+            redirect('join', [
+                'rerror' => $error->content
             ]);
             return;
         }
@@ -117,7 +126,7 @@ class Auth {
         $developer = inputs('developer');
 
         if($password != $confirmPassword) {
-            redirect(url('join'), [
+            redirect('join', [
                 'rerror' => [
                     'Password do not match !'
                 ]
@@ -129,15 +138,38 @@ class Auth {
         $userId = -1;
         $success = false;
 
-        $results = DB::query('insert into users (email, password, type) values(?,?,?)', [
-            $email, $password, $developer == "on" ? 2 : 1
+        $query = new Query('users');
+        $query->insert('email,password,type',[
+            $email,
+            $password,
+            $developer == 'on' ? 2 : 1
         ]);
 
-        if($results['affectedRows'] > 0) {
-            $userId = $results['lastId'];
+        try {
+            $result = DB::exec($query);
+        } catch (PDOException $e) {
+            if (strstr($e->getMessage(), 'Duplicate')) {
+                redirect('join', [
+                    'rerror' => [
+                        'Email already exists.'
+                    ]
+                ]);
+            } else {
+                redirect('join', [
+                    'rerror' => [
+                        'Error ! Something went wrong .'
+                    ]
+                ]);
+            }
+            return;
         }
 
-        $results = DB::query('insert into profiles (user_id, name, nrc, billing_info, address, balance) values (?,?,?,?,?,?)', [
+        if($result->affectedRows > 0) {
+            $userId = $result->lastId;
+        }
+
+        $query = new Query('profiles');
+        $query->insert('user_id, name, nrc, billing_info, address, balance', [
             $userId,
             $name,
             $nrc,
@@ -146,17 +178,40 @@ class Auth {
             0
         ]);
 
-        if($results['affectedRows'] > 0) {
+        try {
+            $result = DB::exec($query);
+        } catch (PDOException $e) {
+            $query = new Query('users');
+            $query->delete()->where('id',$userId);
+            DB::exec($query);
+
+            if (strstr($e->getMessage(), 'Duplicate')) {
+                redirect('join', [
+                    'rerror' => [
+                        'NRC already exists.'
+                    ]
+                ]);
+            } else {
+                redirect('join', [
+                    'rerror' => [
+                        'Error ! Something went wrong .'
+                    ]
+                ]);
+            }
+            return;
+        }
+
+        if($result->affectedRows > 0) {
             $success = true;
         }
 
         if($success) {
-            redirect(url('join'), [
+            redirect('join', [
                 'status' => 'Registeration Success !'
             ]);
             return;
         } else {
-            redirect(url('join'), [
+            redirect('join', [
                 'rerror' => [
                     'Error ! Something went wrong .'
                 ]
@@ -178,6 +233,6 @@ class Auth {
 
     public function getLogout() {
         session('user', null);
-        redirect(url(''));
+        redirect('');
     }
 }

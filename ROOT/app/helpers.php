@@ -7,6 +7,10 @@ function required($requiredKeys = array()) {
     return Request::required($requiredKeys);
 }
 
+function filesRequired($requiredKeys = array()) {
+    return Request::filesRequired($requiredKeys);
+}
+
 function encrypt($data) {
     return Encryption::make($data, Config::get('security.enckey'));
 }
@@ -48,7 +52,7 @@ function cookie($key, $val = '`') {
 }
 
 function redirect($url, array $with = array()) {
-    return App::redirect($url, $with);
+    return App::redirect(url($url), $with);
 }
 
 function render($view, array $raw = array()) {
