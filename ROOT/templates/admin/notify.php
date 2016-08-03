@@ -1,7 +1,9 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+require __ROOT__.'templates/master/sidebar.php';
+require __ROOT__.'templates/master/navbar.php';
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount', 'accountBalance')) ?>
-<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
+?>
 
 <div class="contents">
     <div class="container">
@@ -26,7 +28,7 @@
                             <div class="col-sm-8">
                                 <select class="unround form-control" name="id">
                                 <?php foreach ($users as $key => $value): ?>
-                                    <option value=<?= $value['id'] ?> <?= $value['id'] == $id ? 'selected' : '' ?>><?= $value['name'] ?></option>
+                                    <option value=<?= $value->id ?> <?= $value->id == $id ? 'selected' : '' ?>><?= $value->name ?></option>
                                 <?php endforeach; ?>
                                 </select>
                             </div>
@@ -111,4 +113,6 @@
     </div>
 </div>
 
-<?php render('master.foot') ?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

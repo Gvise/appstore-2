@@ -1,7 +1,9 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+require __ROOT__.'templates/master/sidebar.php';
+require __ROOT__.'templates/master/navbar.php';
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount', 'accountBalance')) ?>
-<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
+?>
 
 <div class="contents">
     <div class="container">
@@ -73,17 +75,17 @@
                 <tbody>
                 <?php foreach ($mainCategories as $key => $value): ?>
                     <tr>
-                        <td><?= str_replace('G_', '', $value['name']) ?></td>
+                        <td><?= str_replace('G_', '', $value->name) ?></td>
                         <td>
-                            <?php if (strstr($value['name'], 'G_')): ?>
+                            <?php if (strstr($value->name, 'G_')): ?>
                                 <i class="glyphicon glyphicon-ok"></i>
                             <?php else: ?>
                                 <i class="glyphicon glyphicon-remove"></i>
                             <?php endif; ?>
                         </td>
-                        <td><span class="badge"> <?= $value['count'] ?> </span></td>
+                        <td><span class="badge"> <?= $value->count ?> </span></td>
                         <td>
-                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/delcategory/' . $value['id']) ?>></a>
+                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/delcategory/' . $value->id) ?>></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -114,10 +116,10 @@
                 <tbody>
                 <?php foreach ($mainPlatforms as $key => $value): ?>
                     <tr>
-                        <td><?= $value['name'] ?></td>
-                        <td><span class="badge"> <?= $value['count'] ?> </span></td>
+                        <td><?= $value->name ?></td>
+                        <td><span class="badge"> <?= $value->count ?> </span></td>
                         <td>
-                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/delplatform/' . $value['id']) ?>></a>
+                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this category."  href=<?= url('admin/delplatform/' . $value->id) ?>></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -137,4 +139,6 @@
     </div>
 </div>
 
-<?php render('master.foot') ?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

@@ -67,6 +67,12 @@ class Query {
             $fields = $fieldsString;
         }
 
+        if (!is_array($values)) {
+            $valuesForBinding = func_get_args();
+            unset($valuesForBinding[0]);
+            $values = $valuesForBinding;
+        }
+
         $valuesString = '';
         for ($i=0; $i < count($values); $i++) {
             if ($valuesString == '') {
@@ -115,7 +121,7 @@ class Query {
             unset($valuesForBinding[0]);
             $values = $valuesForBinding;
         }
-        
+
         $this->queryString = 'update ' . $this->table . ' set ' . $fields;
         $this->bindings = array_merge($this->bindings, $values);
 
@@ -176,17 +182,16 @@ class Query {
 
     public function orderBy($key, $type = 'asc') {
         $this->queryString .= ' order by ' . $key . ' ' . $type;
-
         return $this;
     }
 
     public function orderByDesc($key) {
         $this->orderBy($key, 'desc');
+        return $this;
     }
 
     public function groupBy($key, $type = 'asc') {
         $this->queryString .= ' group by ' . $key . ' ' . $type;
-
         return $this;
     }
 

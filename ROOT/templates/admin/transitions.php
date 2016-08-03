@@ -1,7 +1,9 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+require __ROOT__.'templates/master/sidebar.php';
+require __ROOT__.'templates/master/navbar.php';
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount', 'accountBalance')) ?>
-<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
+?>
 
 <div class="contents">
     <div class="container">
@@ -38,10 +40,10 @@
                 <tbody>
                     <?php foreach ($deposit as $key => $value): ?>
                         <tr>
-                            <td> <?= $value['id'] ?></td>
-                            <td> <?= $value['amount'] ?></td>
-                            <td> <?= $value['billingInfo'] ?></td>
-                            <td> <?= (new DateTime($value['date']))->format('M d, Y') ?></td>
+                            <td> <?= $value->id ?></td>
+                            <td> <?= $value->amount ?></td>
+                            <td> <?= $value->billingInfo ?></td>
+                            <td> <?= (new DateTime($value->date))->format('M d, Y') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -74,10 +76,10 @@
                 <tbody>
                 <?php foreach ($withdraw as $key => $value): ?>
                     <tr>
-                        <td> <?= $value['id'] ?></td>
-                        <td> <?= $value['amount'] ?></td>
-                        <td> <?= $value['billingInfo'] ?></td>
-                        <td> <?= (new DateTime($value['date']))->format('M d, Y') ?></td>
+                        <td> <?= $value->id ?></td>
+                        <td> <?= $value->amount ?></td>
+                        <td> <?= $value->billingInfo ?></td>
+                        <td> <?= (new DateTime($value->date))->format('M d, Y') ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -112,20 +114,20 @@
                 <tbody>
                 <?php foreach ($pending as $key => $value): ?>
                     <tr>
-                        <td> <?= $value['id'] ?></td>
-                        <td> <?= $value['amount'] ?></td>
-                        <td> <?= $value['billingInfo'] ?></td>
-                        <td> <?= (new DateTime($value['date']))->format('m/d./y') ?></td>
+                        <td> <?= $value->id ?></td>
+                        <td> <?= $value->amount ?></td>
+                        <td> <?= $value->billingInfo ?></td>
+                        <td> <?= (new DateTime($value->date))->format('m/d/y') ?></td>
                         <td>
-                        <?php if ($value['type'] == 1): ?>
+                        <?php if ($value->type == 1): ?>
                             <strong>D</strong>
                         <?php else: ?>
                             <strong>W</strong>
                         <?php endif; ?>
                         </td>
                         <td>
-                            <a href=<?= url('admin/transitions/confirm/' . $value['id'] ) ?> class="unround btn btn-success btn-xs glyphicon glyphicon-ok" data-toggle="tooltips" data-placement="right" title="Confirm this transition."></a>
-                            <a href=<?= url('admin/transitions/delete/' . $value['id'] ) ?> class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this transition."></a>
+                            <a href=<?= url('admin/transitions/confirm/' . $value->id ) ?> class="unround btn btn-success btn-xs glyphicon glyphicon-ok" data-toggle="tooltips" data-placement="right" title="Confirm this transition."></a>
+                            <a href=<?= url('admin/transitions/delete/' . $value->id ) ?> class="unround btn btn-danger btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this transition."></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -146,5 +148,6 @@
         </div>
     </div>
 </div>
-
-<?php render('master.foot') ?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

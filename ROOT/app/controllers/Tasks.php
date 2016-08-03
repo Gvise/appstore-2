@@ -3,57 +3,67 @@ class Tasks {
     public function clearNotifications() {
         Auth::check();
 
-        $id = session('user')['id'];
-        $results = DB::query('delete from notifications where user_id = ?', [
-            $id
-        ]);
-        redirect(url(''), [
-            'status' => $results['affectedRows'] . ' notifications deleted !'
+        $id = session('user')->id;
+        $results = DB::exec(QB::table('notifications')->delete()->where('user_id', $id));
+        redirect('', [
+            'status' => $results->affectedRows . ' notifications deleted !'
         ]);
     }
 
     public function postNotificationSend() {
-        if(session('user')['type'] < 3) {
-            redirect(url(''));
-            return;
-        }
+        try
+        {
+            if(session('user')->type < 3) {
+                redirect(url(''));
+                return;
+            }
 
-        $error = required([
-            'content',
-            'proirity'
-        ]);
-
-        $id = inputs('id');
-        $proirity = inputs('proirity');
-        $content = inputs('content');
-
-        if (count($error) > 0) {
-            redirect(url('admin/notify'), [
-                $id == "0" ? 'errorAll' : 'error' => $error
+            $error = required([
+                'content',
+                'proirity'
             ]);
-            return;
-        }
 
-        if($id == "0") {
-            $userIds = DB::query('select id from users');
-            foreach ($userIds as $key => $value) {
-                DB::query('insert into notifications (user_id, proirity, content) values (?,?,?)', [
-                    $value['id'],
-                    $proirity,
-                    $content
+            $id = inputs('id');
+            $proirity = inputs('proirity');
+            $content = inputs('content');
+
+            if ($error->hasError) {
+                redirect(url('admin/notify'), [
+                    $id == "0" ? 'errorAll' : 'error' => $error->content
+                ]);
+            } else {
+                if($id == "0") {
+                    $userIds = DB::exec(
+                        QB::table('users')
+                        ->select('id')
+                    );
+
+                    foreach ($userIds as $key => $value) {
+                        DB::exec(
+                            QB::table('notifications')
+                            ->insert('user_id,proirity,content', $value->id, $proirity, $content)
+                        );
+                    }
+                } else {
+                    DB::exec(
+                        QB::table('notifications')
+                        ->insert('user_id,proirity,content', $id, $proirity, $content)
+                    );
+                }
+
+                redirect('admin/notify', [
+                    'status' => 'Notification sent !'
                 ]);
             }
-        } else {
-            DB::query('insert into notifications (user_id, proirity, content) values (?,?,?)', [
-                $id,
-                $proirity,
-                $content
+        } catch (Exception $e) {
+            echo $e->getMessage(); die();
+            redirect('admin/notify', [
+                'error' => [
+                    'Something went wrong',
+                    'Please try again'
+                ]
             ]);
         }
-
-        redirect(url('admin/notify'), [
-            'status' => 'Notification sent !'
-        ]);
     }
 
     public function filterStatistics() {
@@ -87,9 +97,9 @@ class Tasks {
             'categoryName'
         ]);
 
-        if(count($error) > 0) {
+        if($error->hasError) {
             redirect(url('admin/cateplat'), [
-                'error' => $error
+                'error' => $error->content
             ]);
             return;
         }
@@ -100,19 +110,20 @@ class Tasks {
         if($isGame == "on")
             $categoryName = 'G_' . $categoryName;
 
-        $results = DB::query('insert into categories (name) values (?)', [
-            $categoryName
-        ]);
+        $results = DB::exec(
+            QB::table('categories')
+            ->insert('name', $categoryName)
+        );
 
-        if($results['affectedRows'] > 0) {
-            redirect(url('admin/cateplat'), [
-                'status' => 'New category added !'
+        if($results->affectedRows > 0) {
+            redirect('admin/cateplat', [
+                'status' => 'New category added'
             ]);
         } else {
-            redirect(url('admin/cateplat'), [
+            redirect('admin/cateplat', [
                 'error' => [
-                    'Something went wrong !',
-                    'Please try again.'
+                    'Something went wrong',
+                    'Please try again'
                 ]
             ]);
         }
@@ -126,27 +137,28 @@ class Tasks {
             'platformName'
         ]);
 
-        if(count($error) > 0) {
+        if($error->hasError) {
             redirect(url('admin/cateplat'), [
-                'error' => $error
+                'error' => $error->content
             ]);
             return;
         }
 
         $platformName = inputs('platformName');
-        $results = DB::query('insert into platforms (name) values (?)', [
-            $platformName
-        ]);
+        $results = DB::exec(
+            QB::table('platforms')
+            ->insert('name', $platformName)
+        );
 
-        if($results['affectedRows'] > 0) {
-            redirect(url('admin/cateplat'), [
-                'status' => 'New platform added !'
+        if($results->affectedRows > 0) {
+            redirect('admin/cateplat', [
+                'status' => 'New platform added'
             ]);
         } else {
-            redirect(url('admin/cateplat'), [
+            redirect('admin/cateplat', [
                 'error' => [
-                    'Something went wrong !',
-                    'Please try again.'
+                    'Something went wrong',
+                    'Please try again'
                 ]
             ]);
         }

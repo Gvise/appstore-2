@@ -2,7 +2,8 @@
 class Pages {
 
     public static function load($stitle, $page) {
-        try {
+        try
+        {
             $title = Config::get('title');
         	$subtitle = $stitle;
 
@@ -10,16 +11,11 @@ class Pages {
                 QB::table('platforms')
                     ->select()
             );
+
             session('platforms', $platforms);
             if (session('currentPlatform') == null) {
                 session('currentPlatform', $platforms[0]);
             }
-
-            $wishlistCount = DB::exec(
-                QB::table('wishlist')
-                    ->select('count(*) as count')
-                    ->where('user_id', session('user')->id)
-            )[0]->count;
 
             $categories = DB::exec(
                 QB::table('categories')
@@ -40,11 +36,19 @@ class Pages {
                     ->orderBy('proirity')
             );
 
-            $accountBalance = DB::exec(
-                QB::table('profiles')
-                    ->select('balance')
-                    ->where('user_id', session('user')->id)
-            )[0]->balance;
+            if (session('user') != null) {
+                $wishlistCount = DB::exec(
+                    QB::table('wishlist')
+                        ->select('count(*) as count')
+                        ->where('user_id', session('user')->id)
+                )[0]->count;
+
+                $accountBalance = DB::exec(
+                    QB::table('profiles')
+                        ->select('balance')
+                        ->where('user_id', session('user')->id)
+                )[0]->balance;
+            }
 
             switch ($page) {
                 case 'home':
@@ -800,47 +804,52 @@ class Pages {
         Auth::check();
 
         $data = static::load('Deposit', 'Deposit');
-        $data['billingAddress'] = DB::query('select profiles.billing_info as billingAddress from profiles, users where profiles.user_id = users.id and users.id = ?', [
-            session('user')['id']
-        ])[0]['billingAddress'];
+        $data['billingAddress'] = DB::exec(
+            QB::table('profiles')
+            ->select('profiles.billing_info as billingAddress')
+            ->innerJoin('users')
+            ->on('profiles.user_id', 'users.id')
+            ->where('users.id', session('user')->id)
+        )[0]->billingAddress;
         render('transitions.deposit', $data);
     }
 
     public function postDeposit() {
         Auth::check();
-
-        if(count($error = required([
+        $error = required([
             'depositAmount'
-        ])) > 0) {
-            redirect(url('deposit'), [
-                'error' => $error
+        ]);
+
+        if($error->hasError) {
+            redirect('deposit', [
+                'error' => $error->content
             ]);
         } else {
             $depositAmount = inputs('depositAmount');
 
             if($depositAmount < Config::get('mindeposit')) {
-                $error[]= 'Minimum deposit amount is 5000 MMK';
-                redirect(url('deposit'), [
-                    'error' => $error
+                redirect('deposit', [
+                    'error' => ['Minimum deposit amount is 5000 MMK']
                 ]);
             } else {
-                // var_dump((new DateTime())->format('Y-m-d'));
-                $result = DB::query('insert into transactions (user_id, completed, date, amount, type) values(?,?,now(),?, ?)', [
-                    session('user')['id'],
-                    0,
-                    $depositAmount,
-                    Config::get('transaction.deposit')
-                ]);
-                if ($result['affectedRows'] > 0) {
-                    redirect(url('deposit'), [
+                $result = DB::exec(
+                    QB::table('transactions')
+                    ->insert('user_id, completed, date, amount, type', session('user')->id, 0, date('Y-m-d H:i:s') , $depositAmount, Config::get('transaction.deposit'))
+                );
+
+                if ($result->affectedRows > 0) {
+                    redirect('deposit', [
                         'status' => 'Deposit request sent !'
                     ]);
                 } else {
-                    $error[]= 'Something went wrong !';
-                    $error[]= 'Please try again';
-                    redirect(url('deposit'), [
-                        'error' => $error
-                    ]);
+                    redirect('deposit',
+                        [
+                            'error' => [
+                                'Someting went wrong',
+                                'Please try again'
+                            ]
+                        ]
+                    );
                 }
             }
         }
@@ -848,7 +857,6 @@ class Pages {
 
     public function getWithdraw() {
         $data = static::load('Withdraw', 'Withdraw');
-
         render('transitions.withdraw', $data);
     }
 
@@ -856,51 +864,65 @@ class Pages {
         Auth::check();
         Auth::proirity(2);
 
-        if(count($error = required([
+        $error = required([
             'withdrawAmount'
-        ])) > 0) {
-            redirect(url('withdraw'), [
-                'error' => $error
+        ]);
+        if($error->hasError) {
+            redirect('withdraw', [
+                'error' => $error->content
             ]);
         } else {
-            $balance = DB::query('select balance from profiles where user_id = ?', [
-                session('user')['id']
-            ])[0]['balance'];
+            $balance = DB::exec(
+                QB::table('profiles')
+                ->select('balance')
+                ->where('user_id', session('user')->id)
+            )[0]->balance;
 
             $withdrawAmount = inputs('withdrawAmount');
 
             if($withdrawAmount < Config::get('minwithdraw')) {
-                $error[]= 'Minimum withdraw amount is 5000 MMK';
-                redirect(url('withdraw'), [
-                    'error' => $error
+                redirect('withdraw', [
+                    'error' => ['Min withdraw amount is 5000 MMK']
                 ]);
-            } elseif($withdrawAmount > $balance) {
-                $error[]= 'Not enouch balance';
-                redirect(url('withdraw'), [
-                    'error' => $error
+            }
+            elseif($withdrawAmount > $balance) {
+                redirect('withdraw', [
+                    'error' => [
+                        'Not enouch balance'
+                    ]
                 ]);
-            } else {
+            } // 15000 - 11000 = 4000
+            elseif(($balance - $withdrawAmount) < 5000 && ($balance - $withdrawAmount) != 0) {
+                $left = $balance - $withdrawAmount;
+                $require_amount = 5000 - $left;
+                redirect('withdraw', [
+                    'error' => [
+                        'You can\'t withdraw',
+                        'You can\'t leave money less than 5000 in your account',
+                        'Please try ' . ($withdrawAmount + $left) . ' MMK or ' . ($withdrawAmount - $require_amount) . ' MMK'
+                    ]
+                ]);
+            }else {
                 DB::query('update profiles set balance = balance - ? where user_id = ?', [
                     $withdrawAmount,
-                    session('user')['id']
+                    session('user')->id
                 ]);
 
-                $result = DB::query('insert into transactions (user_id, completed, date, amount, type) values(?,?,now(),?, ?)', [
-                    session('user')['id'],
-                    0,
-                    $withdrawAmount,
-                    Config::get('transaction.withdraw')
-                ]);
+                $result = DB::exec(
+                    QB::table('transactions')
+                    ->insert('user_id, completed, date, amount, type', session('user')->id, 0, date('Y-m-d H:i:s') ,$withdrawAmount, Config::get('transaction.withdraw'))
+                );
 
-                if ($result['affectedRows'] > 0) {
-                    redirect(url('withdraw'), [
+                if ($result->affectedRows > 0) {
+                    redirect('withdraw', [
                         'status' => 'Withdraw request sent !'
                     ]);
                 } else {
-                    $error[]= 'Something went wrong !';
-                    $error[]= 'Please try again';
-                    redirect(url('withdraw'), [
-                        'error' => $error
+                    redirect('withdraw', [
+                        'error' => [
+                            'Something went wrong',
+                            'Please try again'
+                        ]
                     ]);
                 }
             }
@@ -912,15 +934,21 @@ class Pages {
 
         $data = static::load('Logs', 'Logs');
 
-        $data['deposit'] = DB::query('select transactions.id, transactions.amount, transactions.date, transactions.completed from transactions where user_id = ? and type = ?', [
-            session('user')['id'],
-            Config::get('transaction.deposit')
-        ]);
+        $data['deposit'] = DB::exec(
+            QB::table('transactions')
+            ->select('id, amount, date, completed')
+            ->where('user_id', session('user')->id)
+            ->and()
+            ->where('type', Config::get('transaction.deposit'))
+        );
 
-        $data['withdraw'] = DB::query('select transactions.id, transactions.amount, transactions.date, transactions.completed from transactions where user_id = ? and type = ?', [
-            session('user')['id'],
-            Config::get('transaction.withdraw')
-        ]);
+        $data['withdraw'] = DB::exec(
+            QB::table('transactions')
+            ->select('id, amount, date, completed')
+            ->where('user_id', session('user')->id)
+            ->and()
+            ->where('type', Config::get('transaction.withdraw'))
+        );
 
         render('transitions.logs', $data);
     }
@@ -928,18 +956,21 @@ class Pages {
     public function reportLog($id) {
         Auth::check();
 
-        $result = DB::query('insert into transactionreports (transaction_id) values (?)', [
-            $id
-        ]);
+        try {
+            $result = DB::exec(
+                QB::table('transactionreports')
+                ->insert('transaction_id', $id)
+            );
 
-        if (strstr($result, 'Duplicate entry') == false && $result['affectedRows'] > 0) {
-            redirect(url('logs'), [
-                'status' => 'Operation success !'
+            redirect('logs', [
+                'status' => 'Operation success'
             ]);
-        } else {
-            redirect(url('logs'), [
-                'status' => 'This transaction is already reported !'
-            ]);
+        } catch (Exception $e) {
+            if (strstr($e->getMessage(), 'Duplicate entry')) {
+                redirect('logs', [
+                    'status' => 'This transaction is already reported'
+                ]);
+            }
         }
     }
 }

@@ -1,10 +1,4 @@
-<!-- Sidebar -->
-<!--  title, myAppCount, accountBalance, wishlistCount, categories, categoryGames-->
 <div class="sidebar">
-    <div class="brand">
-        <a href=""><?=$title ?></a>
-    </div>
-
 <?php if (session('platforms') != null): ?>
     <ul class="nav nav-stacked sidebar-p-nav">
         <li role="presentation">

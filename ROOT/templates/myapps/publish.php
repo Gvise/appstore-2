@@ -1,10 +1,12 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount', 'accountBalance')) ?>
-<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+require __ROOT__.'templates/master/sidebar.php';
+require __ROOT__.'templates/master/navbar.php';
 
+?>
 <div class="contents">
     <div class="container">
-    <?php if (session('user')['type'] > 1): ?>
+    <?php if (session('user')->type > 1): ?>
         <ul class="nav nav-pills">
             <li><a href=<?= url('myapps') ?>>Purchased</a></li>
             <li><a href=<?= url('myapps/published') ?>>Published</a></li>
@@ -33,7 +35,7 @@
                     <label for="name" class="control-label">Platform</label>
                     <select class="unround form-control" name="appPlatform">
                     <?php foreach (session('platforms') as $key => $value): ?>
-                        <option value=<?= $value['id'] ?> > <?= $value['name'] ?> </option>
+                        <option value=<?= $value->id ?> > <?= $value->name ?> </option>
                     <?php endforeach; ?>
                     </select>
                 </div>
@@ -41,7 +43,7 @@
                     <label for="name" class="control-label">Category</label>
                     <select class="unround form-control" name="appCategory">
                     <?php foreach (array_merge($categories, $categoryGames) as $key => $value): ?>
-                        <option value=<?= $value['id'] ?> > <?= str_replace('G_', 'Game:', $value['name']) ?> </option>
+                        <option value=<?= $value->id ?> > <?= str_replace('G_', 'Game:', $value->name) ?> </option>
                     <?php endforeach; ?>
                     </select>
                 </div>
@@ -84,4 +86,6 @@
     </div>
 </div>
 
-<?php render('master.foot') ?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

@@ -98,70 +98,102 @@ class Admin {
                     ->on('users.id', 'profiles.user_id')
             );
         } catch (Exception $e) {
-            echo $e->getMessage();
+            redirect('admin/notify', [
+                'error' => [
+                    'Something went wrong',
+                    'Please try again'
+                ]
+            ]);
         }
 
         render('admin.notify', $data);
     }
 
     public function getCatePlat() {
-        $data = Pages::load('Categories & Platform', 'Categories and Platform');
-        $data['mainCategories'] = DB::query('select * from categories');
+        try {
+            $data = Pages::load('Categories & Platform', 'Categories and Platform');
+            $data['mainCategories'] = DB::exec(
+                QB::table('categories')->select()
+            );
 
-        foreach ($data['mainCategories'] as $key => $value) {
-            $count = DB::query('select count(*) as count from applications where category_id = ?', [
-                $value['id']
-            ])[0];
-            $data['mainCategories'][$key]['count'] = $count['count'];
+            foreach ($data['mainCategories'] as $key => $value) {
+                $count = DB::exec(
+                    QB::table('applications')
+                    ->select('count(*) as count')
+                    ->where('category_id', $value->id)
+                )[0]->count;
+                $data['mainCategories'][$key]->count = $count;
+            }
+
+            $data['mainPlatforms'] = DB::exec(
+                QB::table('platforms')->select()
+            );
+
+            foreach ($data['mainPlatforms'] as $key => $value) {
+                $count = DB::exec(
+                    QB::table('applications')
+                    ->select('count(*) as count')
+                    ->where('platform_id', $value->id)
+                )[0]->count;
+                $data['mainPlatforms'][$key]->count = $count;
+            }
+
+            render('admin.cateplat', $data);
+
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
-
-        $data['mainPlatforms'] = DB::query('select * from platforms');
-
-        foreach ($data['mainPlatforms'] as $key => $value) {
-            $count = DB::query('select count(*) as count from applications where platform_id = ?', [
-                $value['id']
-            ])[0];
-            $data['mainPlatforms'][$key]['count'] = $count['count'];
-        }
-
-        render('admin.cateplat', $data);
     }
 
     public function getTransitions() {
-        $data = Pages::load('Transitions', 'Transitions');
-        $query
-        = 'select transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date
-        from transactions, profiles
-        where profiles.user_id = transactions.user_id and transactions.type = ? and transactions.completed = ? order by transactions.date desc';
-        $data['deposit'] = DB::query($query, [
-            Config::get('transaction.deposit'),
-            1
-        ]);
+        try
+        {
+            $data = Pages::load('Transitions', 'Transitions');
+            $data['deposit'] = DB::exec(
+                QB::table('transactions')
+                ->select('transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date')
+                ->innerJoin('profiles')
+                ->on('profiles.user_id', 'transactions.user_id')
+                ->where('transactions.type', Config::get('transaction.deposit'))
+                ->and()
+                ->where('transactions.completed', 1)
+                ->orderByDesc('transactions.date')
+            );
 
-        $query
-        = 'select transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date
-        from transactions, profiles
-        where profiles.user_id = transactions.user_id and transactions.type = ?  and transactions.completed = ? order by transactions.date desc';
-        $data['withdraw'] = DB::query($query, [
-            Config::get('transaction.withdraw'),
-            1
-        ]);
+            $data['withdraw'] = DB::exec(
+                QB::table('transactions')
+                ->select('transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date')
+                ->innerJoin('profiles')
+                ->on('profiles.user_id', 'transactions.user_id')
+                ->where('transactions.type', Config::get('transaction.withdraw'))
+                ->and()
+                ->where('transactions.completed', 1)
+                ->orderByDesc('transactions.date')
+            );
 
-        $query
-        = 'select transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date, transactions.type
-        from transactions, profiles
-        where profiles.user_id = transactions.user_id and transactions.completed = ? order by transactions.date desc';
-        $data['pending'] = DB::query($query, [
-            0
-        ]);
+            $data['pending'] = DB::exec(
+                QB::table('transactions')
+                ->select('transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date, transactions.type')
+                ->innerJoin('profiles')
+                ->on('profiles.user_id', 'transactions.user_id')
+                ->where('transactions.completed', 0)
+                ->orderByDesc('transactions.date')
+            );
 
-        render('admin.transitions', $data);
+            render('admin.transitions', $data);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     public function getConfirmTransition($id) {
-        $info = DB::query('select amount, type from transactions where id = ?', [$id])[0];
-        $newamount = $info['amount'];
-        $type = $info['type'];
+        $info = DB::exec(
+            QB::table('transactions')
+            ->select('amount, type')
+            ->where('id', $id)
+        )[0];
+        $newamount = $info->amount;
+        $type = $info->type;
 
         if ($newamount == null) {
             redirect(url('admin/transitions'), [
@@ -170,9 +202,13 @@ class Admin {
                 ]
             ]);
         } else {
-            $result = DB::query('update transactions set completed = ? where id = ?', [1, $id]);
-            if ($result['affectedRows'] < 0) {
-                redirect(url('admin/transitions'), [
+            $result = DB::exec(
+                QB::table('transactions')
+                ->update('completed', 1)
+                ->where('id', $id)
+            );
+            if ($result->affectedRows < 0) {
+                redirect('admin/transitions', [
                     'error' => [
                         'Something went wrong !',
                         'Please try again.'
@@ -184,11 +220,11 @@ class Admin {
                     $query = 'update profiles set balance = balance + ? where user_id = ?';
                     $result = DB::query($query, [
                         $newamount,
-                        session('user')['id']
+                        session('user')->id
                     ]);
 
-                    if ($result['affectedRows'] < 0) {
-                        redirect(url('admin/transitions'), [
+                    if ($result->affectedRows < 0) {
+                        redirect('admin/transitions', [
                             'error' => [
                                 'Something went wrong !',
                                 'Please try again.'
@@ -201,21 +237,31 @@ class Admin {
             }
         }
 
-        DB::query('delete from transactionreports where transaction_id = ?' ,[$id]);
-        redirect(url('admin/transitions'), [
+        DB::exec(
+            QB::table('transactionreports')->delete()->where('transaction_id', $id)
+        );
+
+        redirect('admin/transitions', [
             'status' => 'Operation success !'
         ]);
     }
 
     public function getDeleteTransition($id) {
-        $info = DB::query('select type, amount from transactions where id = ?', [$id])[0];
-        $type = $info['type'];
-        $amount = $info['amount'];
+        $info = DB::exec(
+            QB::table('transactions')
+            ->select('type, amount')
+            ->where('id', $id)
+        )[0];
+        $type = $info->type;
+        $amount = $info->amount;
 
         if ($type == Config::get('transaction.deposit')) {
-            $result = DB::query('delete from transactions where id = ?', [$id]);
-            if ($result['affectedRows'] < 0) {
-                redirect(url('admin/transitions'), [
+            $result = DB::exec(
+                QB::table('transactions')
+                ->delete()->where('id', $id)
+            );
+            if ($result->affectedRows < 0) {
+                redirect('admin/transitions', [
                     'error' => [
                         'Something went wrong !',
                         'Please try again.'
@@ -226,12 +272,15 @@ class Admin {
         } else {
             DB::query('update profiles set balance = balance + ? where user_id = ?', [
                 $amount,
-                session('user')['id']
+                session('user')->id
             ]);
 
-            $result = DB::query('delete from transactions where id = ?', [$id]);
-            if ($result['affectedRows'] < 0) {
-                redirect(url('admin/transitions'), [
+            $result = DB::exec(
+                QB::table('transactions')
+                ->delete()->where('id', $id)
+            );
+            if ($result->affectedRows < 0) {
+                redirect('admin/transitions', [
                     'error' => [
                         'Something went wrong !',
                         'Please try again.'
@@ -241,19 +290,19 @@ class Admin {
             }
         }
 
-        redirect(url('admin/transitions'), [
+        redirect('admin/transitions', [
             'status' => 'Operation success !'
         ]);
     }
 
     public function getDeleteAllTransition($type) {
         $result = DB::query('delete from transactions where type = ? and completed = 1', [$type]);
-        if($result['affectedRows'] > 0) {
-            redirect(url('admin/transitions'), [
+        if($result->affectedRows > 0) {
+            redirect('admin/transitions', [
                 'status' => 'Operation success !'
             ]);
         } else {
-            redirect(url('admin/transitions'), [
+            redirect('admin/transitions', [
                 'error' => [
                     'Something went wrong !',
                     'Please try again.'
@@ -264,24 +313,23 @@ class Admin {
 
     public function getTransitonReports() {
         $data = Pages::load('Transition Reports', 'Transition Reports');
-        $query
-        = 'select transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date
-        from transactions, transactionreports, profiles
-        where profiles.user_id = transactions.user_id and transactions.id = transactionreports.transaction_id and transactions.type = ?';
 
-        $data['deposit'] = DB::query($query, [
-            Config::get('transaction.deposit')
-        ]);
+        $data['deposit'] = DB::exec(
+            QB::table('transactions')
+            ->select('transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date')
+            ->innerJoin('profiles')->on('profiles.user_id', 'transactions.user_id')
+            ->innerJoin('transactionreports')->on('transactionreports.transaction_id', 'transactions.id')
+            ->where('transactions.type', Config::get('transaction.deposit'))
+        );
 
+        $data['withdraw'] = DB::exec(
+            QB::table('transactions')
+            ->select('transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date')
+            ->innerJoin('profiles')->on('profiles.user_id', 'transactions.user_id')
+            ->innerJoin('transactionreports')->on('transactionreports.transaction_id', 'transactions.id')
+            ->where('transactions.type', Config::get('transaction.withdraw'))
+        );
 
-        $query
-        = 'select transactions.id, transactions.amount, profiles.billing_info as billingInfo, transactions.date
-        from transactions, transactionreports, profiles
-        where profiles.user_id = transactions.user_id and transactions.id = transactionreports.transaction_id and transactions.type = ?';
-
-        $data['withdraw'] = DB::query($query, [
-            Config::get('transaction.withdraw')
-        ]);
         render('admin.transitionreports', $data);
     }
 

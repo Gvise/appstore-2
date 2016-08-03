@@ -1,11 +1,13 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+require __ROOT__.'templates/master/sidebar.php';
+require __ROOT__.'templates/master/navbar.php';
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount', 'accountBalance')) ?>
-<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
+?>
 
 <div class="contents">
     <div class="container">
-    <?php if (session('user')['type'] > 1): ?>
+    <?php if (session('user')->type > 1): ?>
         <ul class="nav nav-pills">
             <li><a href=<?= url('myapps') ?>>Purchased</a></li>
             <li><a href=<?= url('myapps/published') ?>>Published</a></li>
@@ -81,4 +83,6 @@
     </div>
 </div>
 
-<?php render('master.foot') ?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

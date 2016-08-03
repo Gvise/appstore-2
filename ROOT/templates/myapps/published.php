@@ -1,11 +1,13 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+require __ROOT__.'templates/master/sidebar.php';
+require __ROOT__.'templates/master/navbar.php';
 
-<?php render('master.sidebar', compact('title', 'categories', 'categoryGames', 'wishlistCount', 'accountBalance')) ?>
-<?php render('master.navbar', compact('notifications','selectHome', 'selectNewReleases', 'currentPage')) ?>
+?>
 
 <div class="contents">
     <div class="container">
-    <?php if (session('user')['type'] > 1): ?>
+    <?php if (session('user')->type > 1): ?>
         <ul class="nav nav-pills">
             <li><a href=<?= url('myapps') ?>>Purchased</a></li>
             <li class="active"><a href=<?= url('myapps/published') ?>>Published</a></li>
@@ -19,20 +21,17 @@
             <div class="panel-body">
             <?php foreach ($apps as $key => $value): ?>
                 <div class="app-card">
-                    <a href=<?=url('app/'.$value['id'])?>>
-                        <img src=<?= assets('assets/images/app-icons/' . $value['icon']) ?> alt="..." class="img-thumbnail unround">
+                    <a href=<?=url('app/'.$value->id)?>>
+                        <img src=<?= assets('storage/icons/' . $value->icon) ?> alt="..." class="img-thumbnail unround">
                     </a>
-                    <p><a class="app-card-link" href=<?=url('app/'.$value['id'])?>><?=$value['name'] ?></a></p>
+                    <p><a class="app-card-link" href=<?=url('app/'.$value->id)?>><?=$value->name ?></a></p>
                     <div>
                         <div>
-                        <?php for ($i=0; $i < $value['stars']; $i++): ?>
-                            <i class="glyphicon glyphicon-star"></i>
-                        <?php endfor; ?>
-                        <?php for ($i=0; $i < 5-$value['stars']; $i++): ?>
-                            <i class="glyphicon glyphicon-star-empty"></i>
-                        <?php endfor; ?>
+                            <i class="glyphicon glyphicon-star"></i> <?= $value->rating ?>
+                            <span class="pull-right"><?=str_replace('G_', '', $value->categoryName)?></span>
                         </div>
-                        <a class="text-success" href=<?=url('app/'.$value['id'])?>><small><?=$value['price'] == 0 ? 'Free' : $value['price'].' MMK'?></small></a>
+                        <hr class="custom-divider">
+                        <a class="text-success" href=<?=url('app/'.$value->id)?>><small><?=$value->price == 0 ? 'Free App' : $value->price.' MMK'?></small></a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -41,4 +40,6 @@
     </div>
 </div>
 
-<?php render('master.foot') ?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

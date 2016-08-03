@@ -82,72 +82,15 @@ class MyApps {
         $data = Pages::load('Published', 'My Apps');
 
         //get from database;
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
+        $data['apps'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price, categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->where('applications.user_id', session('user')->id)
+        );
 
         render('myapps.published', $data);
     }
@@ -236,7 +179,7 @@ class MyApps {
 
     public function postPublish() {
         Auth::proirity(2);
-        if(count($error = required([
+        $error = required([
             'name',
             'appPlatform',
             'appCategory',
@@ -244,20 +187,24 @@ class MyApps {
             'version',
             'details',
             'extra'
-        ])) > 0) {
-            redirect(url('myapps/publish'), [
-                'error' => $error
+        ]);
+
+        if($error->hasError) {
+            redirect('myapps/publish', [
+                'error' => $error->content
             ]);
             return;
         }
 
-        if(count($error = filesRequired([
+        $error = filesRequired([
             'icon',
             'screenshots',
             'app'
-        ])) > 0) {
-            redirect(url('myapps/publish'), [
-                'error' => $error
+        ]);
+
+        if($error->hasError) {
+            redirect('myapps/publish', [
+                'error' => $error->content
             ]);
             return;
         }
@@ -271,44 +218,35 @@ class MyApps {
         $extra = inputs('extra');
         $size = $_FILES['app']['size'];
 
-        $prefix = session('user')['id'].date('ymdhms');
+        $prefix = session('user')->id . date('ymdhms');
         $icon = $prefix.$_FILES['icon']['name'];
         $app = $prefix.$_FILES['app']['name'];
         $screenshots = $_FILES['screenshots']['name'];
 
 
         $keyword = strtolower(str_replace(' ', '_', $name));
-        $query = 'insert into applications (user_id, category_id, platform_id, keyword, rating, updated_date, icon) values(?,?,?,?,?,now(),?)';
-        $result = DB::query($query, [
-            session('user')['id'],
-            $appCategory,
-            $appPlatform,
-            $keyword,
-            0,
-            $icon
-        ]);
+        $result = DB::exec(
+            QB::table('applications')
+            ->insert('user_id, category_id, platform_id, keyword, rating, updated_date, icon',
+                session('user')->id, $appCategory, $appPlatform, $keyword, 0, date('Y-m-d H:i:s') , $icon
+            )
+        );
 
-        $appId = $result['lastId'];
+        $appId = $result->lastId;
 
-        $query = 'insert into appdetails (app_id,name,path,version,price,size,downloads,details,extra) values (?,?,?,?,?,?,?,?,?)';
-        $result = DB::query($query, [
-            $appId,
-            $name,
-            $app,
-            $version,
-            $price,
-            $size,
-            0,
-            $details,
-            $extra
-        ]);
+        $result = DB::exec(
+            QB::table('appdetails')
+            ->insert('app_id, name, path, version, price, size, downloads, details, extra',
+                $appId, $name, $app, $version, $price, $size, 0, $details, $extra
+            )
+        );
 
         foreach ($screenshots as $key => $value) {
             $file = $prefix.$value;
-            DB::query('insert into screenshots (app_id,path) values(?,?)',[
-                $appId,
-                $file
-            ]);
+            DB::exec(
+                QB::table('screenshots')
+                ->insert('app_id, path', $appId, $file)
+            );
         }
 
         File::upload('icon', [
@@ -317,7 +255,7 @@ class MyApps {
             'name' => $icon,
             'path' => Config::get('iconpath')
         ], function($result) {
-            redirect(url('myapps/publish'), [
+            redirect('myapps/publish', [
                 'error' => $result
             ]);
             exit();
@@ -327,7 +265,7 @@ class MyApps {
             'name' => $app,
             'path' => Config::get('apppath')
         ], function($result) {
-            redirect(url('myapps/publish'), [
+            redirect('myapps/publish', [
                 'error' => $result
             ]);
             exit();
@@ -339,13 +277,13 @@ class MyApps {
             'prefix' => $prefix,
             'path' => Config::get('sspath')
         ], function($errors) {
-            redirect(url('myapps/publish'), [
+            redirect('myapps/publish', [
                 'error' => $errors
             ]);
             exit();
         });
 
-        redirect(url('myapps/publish'), [
+        redirect('myapps/publish', [
             'status' => 'Operation success !'
         ]);
    }
