@@ -186,11 +186,18 @@
 
 }
 
-.app-card-md {
-
+.app-card-del {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    background-color: #d14128;
+    border-radius: 0;
+    color:white;
 }
 
 .app-card {
+    position: relative;
     display: inline-block;
     margin-top:7px;
     margin-right:7px;

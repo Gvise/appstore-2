@@ -17,10 +17,12 @@ require __ROOT__.'templates/master/navbar.php';
         </ul>
         <hr>
     <?php endif; ?>
+    <?php if (isset($apps)): ?>
         <div class="panel panel-default unround app-feed-panel">
             <div class="panel-body">
             <?php foreach ($apps as $key => $value): ?>
                 <div class="app-card">
+                    <a href=<?= url('myapps/delete/' . $value->id); ?> data-toggle="tooltips" data-placement="left" title="Delete this application" class="app-card-del unround btn btn-xs btn-default glyphicon glyphicon-trash"></a>
                     <a href=<?=url('app/'.$value->id)?>>
                         <img src=<?= assets('storage/icons/' . $value->icon) ?> alt="..." class="img-thumbnail unround">
                     </a>
@@ -37,6 +39,17 @@ require __ROOT__.'templates/master/navbar.php';
             <?php endforeach; ?>
             </div>
         </div>
+    <?php else: ?>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        NO RECORDS
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    <?php endif; ?>
     </div>
 </div>
 

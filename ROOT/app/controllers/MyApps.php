@@ -4,84 +4,108 @@ class MyApps {
         Auth::check();
     }
 
+    public function getDelete($id) {
+        Auth::proirity(2);
+
+        $userId = session('user')->id;
+        $appId = $id;
+
+        try {
+            $icon = Config::get('iconpath') . DB::exec(
+                QB::table('applications')
+                ->select('icon')
+                ->where('id', $appId)
+                ->and()
+                ->where('user_id', $userId)
+            )[0]->icon;
+
+            $file = Config::get('apppath') . DB::exec(
+                QB::table('appdetails')
+                ->select('path as file')
+                ->innerJoin('applications')->on('applications.id', 'appdetails.app_id')
+                ->where('app_id', $appId)
+                ->and()
+                ->where('applications.user_id', $userId)
+            )[0]->file;
+
+            $screenshots = DB::exec(
+                QB::table('screenshots')
+                ->select('path')
+                ->innerJoin('applications')->on('screenshots.app_id', 'applications.id')
+                ->where('screenshots.app_id', $appId)
+                ->and()
+                ->where('applications.user_id', $userId)
+            );
+
+            foreach ($screenshots as $key => $value) {
+                $screenshots[$key] = Config::get('sspath') . $value->path;
+            }
+
+            $toDelete = $screenshots;
+            $toDelete[] = $file;
+            $toDelete[] = $icon;
+
+            foreach ($toDelete as $key => $value) {
+                unlink($value);
+            }
+
+            $affectedRows = DB::exec(
+                QB::table('applications')
+                ->delete()
+                ->where('id', $appId)->and()
+                ->where('user_id', $userId)
+            )->affectedRows;
+
+            if ($affectedRows > 0) {
+                redirect('myapps', [
+                    'status' => 'Operation Success'
+                ]);
+            } else {
+                redirect('myapps', [
+                    'status' => 'Something went wrong'
+                ]);
+            }
+        } catch (Exception $e) {
+            redirect('myapps', [
+                'status' => 'Something went wrong'
+            ]);
+        }
+    }
+
     public function getPurchased() {
+        Auth::proirity(2);
         $data = Pages::load('Purchased', 'My Apps');
 
+        // $data['apps'] = DB::exec(
+        //     QB::table('applications')
+        //     ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price, categories.name as categoryName')
+        //     ->innerJoin('appdetails')
+        //     ->on('appdetails.app_id', 'applications.id')
+        //     ->innerJoin('categories')
+        //     ->on('applications.category_id', 'categories.id')
+        //     ->where('applications.user_id', session('user')->id)
+        // );
+
         //get from database;
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
+        // $data['apps'] = [
+        //     [
+        //         'id' => 1,
+        //         'name' => 'Warlings',
+        //         'icon' => 'warlings.webp',
+        //         'stars' => 5,
+        //         'price' => 0,
+        //         'url' => ''
+        //     ]
+        // ];
 
         render('myapps.purchased', $data);
     }
 
     public function getPublished() {
+        Auth::proirity(2);
+
         $data = Pages::load('Published', 'My Apps');
 
-        //get from database;
         $data['apps'] = DB::exec(
             QB::table('applications')
             ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price, categories.name as categoryName')
@@ -157,15 +181,33 @@ class MyApps {
     }
 
     public function getInapp() {
+        Auth::proirity(2);
+
         $data = Pages::load('My Inappropirate Apps', 'My Apps');
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'platform' => 'Android',
-                'reportcount' => 5
-            ]
-        ];
+
+        $apps = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name as appName, platforms.name as platformName')
+            ->innerJoin('appdetails')->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('platforms')->on('applications.platform_id', 'platforms.id')
+        );
+
+        foreach ($apps as $key => $value) {
+            $apps[$key]->reportCount = DB::exec(
+                QB::table('inappropirateapps')
+                ->select('count(*) as count')
+                ->where('app_id', $value->id)
+            )[0]->count;
+
+            if ($apps[$key]->reportCount <= 0) {
+                unset($apps[$key]);
+            }
+        }
+
+        if (!empty($apps)) {
+            $data['apps'] = $apps;
+        }
+
         render('myapps.inapps', $data);
     }
 

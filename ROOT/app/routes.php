@@ -1,5 +1,4 @@
 <?php
-
 get('/zz', function() {
 	try {
 		echo $foo;
@@ -39,6 +38,7 @@ get('/zz', function() {
 // Block MyApps
 {
 	get('myapps', 'MyApps@getPurchased');
+	get('myapps/delete/[:id]', 'MyApps@getDelete');
 	get('myapps/purchased', 'MyApps@getPurchased');
 	get('myapps/published', 'MyApps@getPublished');
 	get('myapps/inappropirate', 'MyApps@getInapp');
@@ -68,7 +68,9 @@ get('/zz', function() {
 	get('admin/inappropirate/delete/[:ids]', 'Admin@getInappropirateDelete');
 	get('admin/inappropirate', 'Admin@postInappropirate');
 	get('admin/notify', 'Admin@getNotify');
-	get('admin/warn/[:id]/[:appId]/[:content]', 'Admin@getWarnToOwner');
+	get('admin/warn/[:appId]/[:content]', 'Admin@getWarnToOwner');
+
+	get('app/delete/[:id]', 'Admin@getAppDelete');
 	get('user/delete/[:id]', 'Admin@getUserDelete');
 }
 

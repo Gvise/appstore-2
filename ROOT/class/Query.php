@@ -55,17 +55,8 @@ class Query {
     }
 
     public function insert($fields = '', $values = array()) {
-        if (is_array($fields)) {
-            $fieldsString = '';
-            foreach ($fields as $key => $value) {
-                if ($fieldsString == '') {
-                    $fieldsString = $value;
-                } else {
-                    $fieldsString .= ',' . $value;
-                }
-            }
-            $fields = $fieldsString;
-        }
+        if (is_array($fields))
+            $fields = implode(',', $fields);
 
         if (!is_array($values)) {
             $valuesForBinding = func_get_args();
@@ -133,17 +124,8 @@ class Query {
             $type = 'select';
         }
 
-        if (is_array($fields)) {
-            $tmp_fields = $fields;
-            $fields = '';
-
-            foreach ($tmp_fields as $key => $value) {
-                if ($fields == '')
-                    $fields = $value;
-                else
-                    $fields = $fields . ',' . $value;
-            }
-        }
+        if (is_array($fields))
+            $fields = implode(',', $fields);
 
         $this->queryString = $type . ' ' . $fields . ' from ' . $this->table;
         return $this;

@@ -35,7 +35,7 @@ require __ROOT__.'templates/master/navbar.php';
                         <div class="form-group">
                             <label for="Platform">Platform</label>
                             <select class="unround form-control" name="platform">
-                                <option value="-1"> No Selection </option>
+                                <option value="0"> All Platforms </option>
                             <?php foreach (session('platforms') as $key => $value): ?>
                                     <option value=<?= $value->id ?>> <?= $value->name ?> </option>
                             <?php endforeach; ?>
@@ -46,7 +46,7 @@ require __ROOT__.'templates/master/navbar.php';
                             <?php $cats = array_merge($categoryGames, $categories); ?>
                             <label for="category">Category</label>
                             <select class="unround form-control" name="category">
-                                <option value="-1"> No Selection </option>
+                                <option value="0"> All Categories </option>
                             <?php foreach ($cats as $key => $value) : ?>
                                 <option value=<?= $value->id ?>> <?= str_replace('G_', 'Game: ', $value->name)?> </option>
                             <?php endforeach; ?>
@@ -81,9 +81,9 @@ require __ROOT__.'templates/master/navbar.php';
                         <td><?= $value->category ?></td>
                         <td><span class="badge"><?= $value->reportCount ?></span></td>
                         <td>
-                            <a href=<?= url('admin/warn/'. $value->userId . '/' . $value->id .  '/'  . $value->reportCount) ?> class="unround btn btn-warning btn-xs glyphicon glyphicon-info-sign" data-toggle="tooltips" data-placement="right" title="Warn to owner."></a>
+                            <a href=<?= url('admin/warn/'. $value->id .  '/'  . $value->reportCount) ?> class="unround btn btn-warning btn-xs glyphicon glyphicon-info-sign" data-toggle="tooltips" data-placement="right" title="Warn to owner."></a>
                             <a href=<?= url('admin/inappropirate/delete/' . $value->id) ?> class="unround btn btn-info btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this report"></a>
-                            <a href="" class="unround btn btn-danger btn-xs glyphicon glyphicon-trash" data-toggle="tooltips" data-placement="right" title="Delete this application."></a>
+                            <a href=<?= url('app/delete/' . $value->id) ?> class="unround btn btn-danger btn-xs glyphicon glyphicon-trash" data-toggle="tooltips" data-placement="right" title="Delete this application."></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -336,17 +336,27 @@ class Admin {
     public function getInappropirate() {
         $data = Pages::load('Inappropirate Apps', 'Inappropirate Apps');
 
-        $category = inputs('category') == "-1" ? null : inputs('category');
-        $platform = inputs('platform') == "-1" ? null : inputs('platform');
+        $category = inputs('category') == "0" ? null : inputs('category');
+        $platform = inputs('platform') == "0" ? null : inputs('platform');
 
-        $inappropirateApps = DB::exec(
-            QB::table('applications')
-            ->select('users.id as userId, applications.id, appdetails.name, platforms.name as platform, categories.name as category')
-            ->innerJoin('users')->on('applications.user_id', 'users.id')
-            ->innerJoin('appdetails')->on('appdetails.app_id', 'applications.id')
-            ->innerJoin('platforms')->on('applications.platform_id', 'platforms.id')
-            ->innerJoin('categories')->on('applications.category_id', 'categories.id')
-        );
+        $query = QB::table('applications')
+                ->select('users.id as userId, applications.id, appdetails.name, platforms.name as platform, categories.name as category')
+                ->innerJoin('users')->on('applications.user_id', 'users.id')
+                ->innerJoin('appdetails')->on('appdetails.app_id', 'applications.id')
+                ->innerJoin('platforms')->on('applications.platform_id', 'platforms.id')
+                ->innerJoin('categories')->on('applications.category_id', 'categories.id');
+
+        if ($category != null && $platform != null) {
+            $query = $query->where('applications.category_id', $category)
+                           ->and()
+                           ->where('applications.platform_id', $platform);
+        } elseif ($category != null && $platform == null) {
+            $query = $query->where('applications.category_id', $category);
+        } elseif ($category == null && $platform != null) {
+            $query = $query->where('applications.platform_id', $platform);
+        }
+
+        $inappropirateApps = DB::exec($query);
 
         foreach ($inappropirateApps as $key => $value) {
             $inappropirateApps[$key]->category = str_replace('G_', 'Game: ', $value->category);
@@ -356,45 +366,36 @@ class Admin {
                 ->where('app_id', $value->id)
             )[0]->reportCount;
 
-            if ($value->reportCount == 0) {
+            if ($inappropirateApps[$key]->reportCount <= 0) {
                 unset($inappropirateApps[$key]);
             }
         }
 
-        $data['apps'] = $inappropirateApps;
+        if (!empty($inappropirateApps)) {
+            $data['apps'] = $inappropirateApps;
+        }
 
         render('admin.inappropirate', $data);
     }
 
-    public function getWarnToOwner($id, $appId, $count) {
-        try
-        {
-            $appName = DB::exec(
+    public function getWarnToOwner($appId, $count) {
+        try {
+            $app = DB::exec(
                 QB::table('appdetails')
-                ->select('name')
-                ->where('app_id', $appId)
-            )[0]->name;
+                ->select('appdetails.name, applications.user_id as userId')
+                ->innerJoin('applications')->on('appdetails.app_id', 'applications.id')
+                ->where('appdetails.app_id', $appId)
+            )[0];
+
+            $appName = $app->name;
+            $userId = $app->userId;
 
             $content = 'Your application ' . $appName . ' got ' . $count . ' reports.';
-            $proirity = 1;
-            if($id == "0") {
-                $userIds = DB::exec(
-                    QB::table('users')
-                    ->select('id')
-                );
 
-                foreach ($userIds as $key => $value) {
-                    DB::exec(
-                        QB::table('notifications')
-                        ->insert('user_id,proirity,content', $value->id, $proirity, $content)
-                    );
-                }
-            } else {
-                DB::exec(
-                    QB::table('notifications')
-                    ->insert('user_id,proirity,content', $id, $proirity, $content)
-                );
-            }
+            DB::exec(
+                QB::table('notifications')
+                ->insert('user_id ,proirity,content', $userId, 1, $content)
+            );
 
             redirect('admin/inappropirate', [
                 'status' => 'Operation Success'
@@ -429,6 +430,73 @@ class Admin {
                     ]
                 ]);
             }
+        } catch (Exception $e) {
+            redirect('admin/inappropirate', [
+                'error' => [
+                    'Something went wrong',
+                    'Please try again'
+                ]
+            ]);
+        }
+    }
+
+    public function getAppDelete($appId) {
+        try {
+            $app = DB::exec(
+                QB::table('appdetails')
+                ->select('appdetails.name, applications.user_id as userId')
+                ->innerJoin('applications')->on('appdetails.app_id', 'applications.id')
+                ->where('appdetails.app_id', $appId)
+            )[0];
+
+            $appName = $app->name;
+            $userId = $app->userId;
+
+            $icon = Config::get('iconpath') . DB::exec(
+                QB::table('applications')
+                ->select('icon')
+                ->where('id', $appId)
+            )[0]->icon;
+
+            $file = Config::get('apppath') . DB::exec(
+                QB::table('appdetails')
+                ->select('path as file')
+                ->where('app_id', $appId)
+            )[0]->file;
+
+            $screenshots = DB::exec(
+                QB::table('screenshots')
+                ->select('path')
+                ->where('screenshots.app_id', $appId)
+            );
+
+            foreach ($screenshots as $key => $value) {
+                $screenshots[$key] = Config::get('sspath') . $value->path;
+            }
+
+            $toDelete = $screenshots;
+            $toDelete[] = $file;
+            $toDelete[] = $icon;
+
+            foreach ($toDelete as $key => $value) {
+                unlink($value);
+            }
+
+            DB::exec(
+                QB::table('applications')
+                ->delete()
+                ->where('id', $appId)
+            );
+
+            $content = 'Your application ' . $appName . ' has been deleted by administrator !';
+            DB::exec(
+                QB::table('notifications')
+                ->insert('user_id ,proirity,content', $userId, 2, $content)
+            );
+
+            redirect('admin/inappropirate', [
+                'status' => 'Operation Success'
+            ]);
         } catch (Exception $e) {
             redirect('admin/inappropirate', [
                 'error' => [

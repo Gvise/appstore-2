@@ -20,7 +20,7 @@ class Auth {
     public static function proirity($proirity) {
         switch ($proirity) {
             case 3:
-                if(session('user')->type != 3) {
+                if(session('user')->type < 3) {
                     redirect('', [
                         'status' => 'You are not an administrator !'
                     ]);
@@ -29,7 +29,7 @@ class Auth {
             break;
 
             case 2:
-                if(session('user')->type != 2) {
+                if(session('user')->type < 2) {
                     redirect('', [
                         'status' => 'You are not a developer !'
                     ]);

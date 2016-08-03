@@ -21,21 +21,19 @@ require __ROOT__.'templates/master/navbar.php';
         <?php if (isset($apps)): ?>
             <thead>
                 <tr>
-                    <th>NO.</th>
                     <th>APP NAME</th>
                     <th>PLATFORM</th>
                     <th>REPORT COUNT</th>
                 </tr>
             </thead>
             <tbody>
-            <?php for($i = 0; $i < count($apps); $i++): ?>
+            <?php foreach ($apps as $key => $value): ?>
                 <tr>
-                    <td><?= $i+1 ?></td>
-                    <td><a href=<?= url('app/'.$apps[$i]['id']) ?> data-toggle="tooltips" data-placement="right" title="Review App"><?= $apps[$i]['name'] ?></a> <i class="glyphicon glyphicon-share-alt"></i></td>
-                    <td><?= $apps[$i]['platform'] ?></td>
-                    <td><span class="badge"><?= $apps[$i]['reportcount'] ?></span></td>
+                    <td><a href=<?= url('app/'.$value->id) ?> data-toggle="tooltips" data-placement="right" title="Review App"><?= $value->appName ?></a> <i class="glyphicon glyphicon-share-alt"></i></td>
+                    <td><?= $value->platformName ?></td>
+                    <td><span class="badge"><?= $value->reportCount ?></span></td>
                 </tr>
-            <?php endfor; ?>
+            <?php endforeach; ?>
             </tbody>
         <?php else: ?>
             <thead>
