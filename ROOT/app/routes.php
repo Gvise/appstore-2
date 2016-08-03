@@ -50,6 +50,11 @@ get('/zz', function() {
 	post('myapps/publish', 'MyApps@postPublish');
 }
 
+//block app
+{
+
+}
+
 // Block Admin
 {
 	get('admin', 'Admin@getUsers');
@@ -60,7 +65,10 @@ get('/zz', function() {
 	get('admin/transitions/deleteall/[:type]', 'Admin@getDeleteAllTransition');
 	get('admin/transitionreports', 'Admin@getTransitonReports');
 	get('admin/inappropirate', 'Admin@getInappropirate');
+	get('admin/inappropirate/delete/[:ids]', 'Admin@getInappropirateDelete');
+	get('admin/inappropirate', 'Admin@postInappropirate');
 	get('admin/notify', 'Admin@getNotify');
+	get('admin/warn/[:id]/[:appId]/[:content]', 'Admin@getWarnToOwner');
 	get('user/delete/[:id]', 'Admin@getUserDelete');
 }
 

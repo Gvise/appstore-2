@@ -1,4 +1,8 @@
 <?php
+function dd($var) {
+    var_dump($var); die();
+}
+
 function inputs($key = null) {
     return Request::inputs($key);
 }

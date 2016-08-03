@@ -89,9 +89,9 @@
 <div id="collapse-categories" style="display:none;">
     <div>
         <ul class="nav nav-stacked">
-            <?php foreach ($categories as $key => $value) : ?>
+        <?php foreach ($categories as $key => $value) : ?>
             <li><a href=<?= url('categories/'. $value->id) ?>><?= $value->name ?></a></li>
-            <?php endforeach; ?>
+        <?php endforeach; ?>
         </ul>
     </div>
     <div>

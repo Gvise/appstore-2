@@ -140,7 +140,6 @@ DROP TABLE IF EXISTS `appstore`.`inappropirateapps` ;
 CREATE TABLE IF NOT EXISTS `appstore`.`inappropirateapps` (
 `user_id` INT UNSIGNED NOT NULL,
 `app_id` INT UNSIGNED NOT NULL,
-`date` DATETIME NOT NULL,
 PRIMARY KEY (`user_id`, `app_id`),
 FOREIGN KEY (`user_id`)
 REFERENCES `appstore`.`users` (`id`)

@@ -17,38 +17,48 @@ require __ROOT__.'templates/master/navbar.php';
         </ul>
         <br>
         <div class="col-md-4">
+        <?php if (($error = with('error')) != null): ?>
+            <div class="unround alert alert-danger">
+                <ul>
+                <?php foreach ($error as $key => $value): ?>
+                    <li><?= $value ?></li>
+                <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
             <div class="unround panel panel-default">
                 <div class="panel-heading">
                     Filter
                 </div>
                 <div class="panel-body">
-                    <form method="post" action=<?= url('admin/inappropirate/filter')?>>
+                    <form method="get" action=<?= url('admin/inappropirate')?>>
                         <div class="form-group">
                             <label for="Platform">Platform</label>
                             <select class="unround form-control" name="platform">
-                                <option value="0">None</option>
-                                <option value="1">Android</option>
+                                <option value="-1"> No Selection </option>
+                            <?php foreach (session('platforms') as $key => $value): ?>
+                                    <option value=<?= $value->id ?>> <?= $value->name ?> </option>
+                            <?php endforeach; ?>
                             </select>
                         </div>
 
                         <div class="form-group">
+                            <?php $cats = array_merge($categoryGames, $categories); ?>
                             <label for="category">Category</label>
                             <select class="unround form-control" name="category">
-                                <option value="0">None</option>
-                                <option value="1">Strategy</option>
+                                <option value="-1"> No Selection </option>
+                            <?php foreach ($cats as $key => $value) : ?>
+                                <option value=<?= $value->id ?>> <?= str_replace('G_', 'Game: ', $value->name)?> </option>
+                            <?php endforeach; ?>
                             </select>
                         </div>
                         <input type="submit" class="btn btn-default pull-right">
                     </form>
                 </div>
             </div>
-            <div class="unround alert alert-danger">
-                <ul>
-                    <li>Error</li>
-                </ul>
-            </div>
         </div>
         <div class="col-md-8">
+        <?php if (isset($apps)): ?>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -60,23 +70,34 @@ require __ROOT__.'templates/master/navbar.php';
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach ($apps as $key => $value): ?>
                     <tr>
                         <td>
-                            <a href=<?= url('app/appid') ?> data-toggle="tooltips" data-placement="right" title="Review App">
-                                Warlings
+                            <a href=<?= url('app/'.$value->id) ?> data-toggle="tooltips" data-placement="right" title="Review App">
+                                <?= $value->name ?>
                             </a> <i class="glyphicon glyphicon-share-alt"></i>
                         </td>
-                        <td>Android</td>
-                        <td>Strategy Game</td>
-                        <td><span class="badge">10</span></td>
+                        <td><?= $value->platform ?></td>
+                        <td><?= $value->category ?></td>
+                        <td><span class="badge"><?= $value->reportCount ?></span></td>
                         <td>
-                            <a class="unround btn btn-info btn-xs glyphicon glyphicon-info-sign" data-toggle="tooltips" data-placement="right" title="Warn to owner."></a>
-                            <a class="unround btn btn-info btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete reports."></a>
-                            <a class="unround btn btn-danger btn-xs glyphicon glyphicon-trash" data-toggle="tooltips" data-placement="right" title="Delete this application."></a>
+                            <a href=<?= url('admin/warn/'. $value->userId . '/' . $value->id .  '/'  . $value->reportCount) ?> class="unround btn btn-warning btn-xs glyphicon glyphicon-info-sign" data-toggle="tooltips" data-placement="right" title="Warn to owner."></a>
+                            <a href=<?= url('admin/inappropirate/delete/' . $value->id) ?> class="unround btn btn-info btn-xs glyphicon glyphicon-remove" data-toggle="tooltips" data-placement="right" title="Delete this report"></a>
+                            <a href="" class="unround btn btn-danger btn-xs glyphicon glyphicon-trash" data-toggle="tooltips" data-placement="right" title="Delete this application."></a>
                         </td>
                     </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php else: ?>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>NO DATA</th>
+                    </tr>
+                </thead>
+            </table>
+        <?php endif; ?>
         </div>
     </div>
 </div>

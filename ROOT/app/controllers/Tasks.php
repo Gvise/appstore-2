@@ -11,13 +11,9 @@ class Tasks {
     }
 
     public function postNotificationSend() {
+        Auth::proirity(3);
         try
         {
-            if(session('user')->type < 3) {
-                redirect(url(''));
-                return;
-            }
-
             $error = required([
                 'content',
                 'proirity'
@@ -28,7 +24,7 @@ class Tasks {
             $content = inputs('content');
 
             if ($error->hasError) {
-                redirect(url('admin/notify'), [
+                redirect(('admin/notify'), [
                     $id == "0" ? 'errorAll' : 'error' => $error->content
                 ]);
             } else {
@@ -98,7 +94,7 @@ class Tasks {
         ]);
 
         if($error->hasError) {
-            redirect(url('admin/cateplat'), [
+            redirect(('admin/cateplat'), [
                 'error' => $error->content
             ]);
             return;
@@ -138,7 +134,7 @@ class Tasks {
         ]);
 
         if($error->hasError) {
-            redirect(url('admin/cateplat'), [
+            redirect(('admin/cateplat'), [
                 'error' => $error->content
             ]);
             return;
@@ -172,7 +168,7 @@ class Tasks {
             $id
         ]);
 
-        redirect(url('admin/cateplat'), [
+        redirect(('admin/cateplat'), [
             'status' => 'Category deleted !'
         ]);
     }
@@ -185,7 +181,7 @@ class Tasks {
             $id
         ]);
 
-        redirect(url('admin/cateplat'), [
+        redirect(('admin/cateplat'), [
             'status' => 'Platform deleted !'
         ]);
     }

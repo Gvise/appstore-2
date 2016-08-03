@@ -2,7 +2,7 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a href="/" class="navbar-brand">
+            <a href=<?= url('') ?> class="navbar-brand">
                 <img alt="" src=<?= assets('assets/images/favicon.ico') ?> class="brand-icon" style="display: inline;"/> <?=$title ?>
             </a>
         </div>
@@ -44,11 +44,11 @@
         <?php if (isset($notifications)): ?>
             <?php foreach ($notifications as $key => $value) : ?>
                 <?php if ($value->proirity == 1): ?>
-                    <li class="bg-danger"><a href="#"><?=$value->content ?></a></li>
+                    <li class="bg-danger" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
                 <?php elseif ($value->proirity == 2): ?>
-                    <li class="bg-warning"><a href="#"><?=$value->content ?></a></li>
+                    <li class="bg-warning" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
                 <?php else: ?>
-                    <li><a href="#"><?=$value->content ?></a></li>
+                    <li style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
                 <?php endif ?>
             <?php endforeach; ?>
             </ul>

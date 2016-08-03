@@ -170,8 +170,13 @@ class Query {
         return $this;
     }
 
-    public function innerJoin($table) {
-        $this->queryString .= ' inner join ' . $table;
+    public function innerJoin($table, $callback = null) {
+        if (is_callable($callback)) {
+            $subQuery = call_user_func($callback)->queryString();
+            $this->queryString .= ' inner join (' . $subQuery . ') ' . $table;
+        } else {
+            $this->queryString .= ' inner join ' . $table;
+        }
         return $this;
     }
 

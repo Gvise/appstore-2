@@ -196,7 +196,7 @@ class Admin {
         $type = $info->type;
 
         if ($newamount == null) {
-            redirect(url('admin/transitions'), [
+            redirect(('admin/transitions'), [
                 'error' => [
                     'Transition not found !'
                 ]
@@ -335,8 +335,107 @@ class Admin {
 
     public function getInappropirate() {
         $data = Pages::load('Inappropirate Apps', 'Inappropirate Apps');
-        //get from db
+
+        $category = inputs('category') == "-1" ? null : inputs('category');
+        $platform = inputs('platform') == "-1" ? null : inputs('platform');
+
+        $inappropirateApps = DB::exec(
+            QB::table('applications')
+            ->select('users.id as userId, applications.id, appdetails.name, platforms.name as platform, categories.name as category')
+            ->innerJoin('users')->on('applications.user_id', 'users.id')
+            ->innerJoin('appdetails')->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('platforms')->on('applications.platform_id', 'platforms.id')
+            ->innerJoin('categories')->on('applications.category_id', 'categories.id')
+        );
+
+        foreach ($inappropirateApps as $key => $value) {
+            $inappropirateApps[$key]->category = str_replace('G_', 'Game: ', $value->category);
+            $inappropirateApps[$key]->reportCount = DB::exec(
+                QB::table('inappropirateapps')
+                ->select('count(*) as reportCount')
+                ->where('app_id', $value->id)
+            )[0]->reportCount;
+
+            if ($value->reportCount == 0) {
+                unset($inappropirateApps[$key]);
+            }
+        }
+
+        $data['apps'] = $inappropirateApps;
 
         render('admin.inappropirate', $data);
+    }
+
+    public function getWarnToOwner($id, $appId, $count) {
+        try
+        {
+            $appName = DB::exec(
+                QB::table('appdetails')
+                ->select('name')
+                ->where('app_id', $appId)
+            )[0]->name;
+
+            $content = 'Your application ' . $appName . ' got ' . $count . ' reports.';
+            $proirity = 1;
+            if($id == "0") {
+                $userIds = DB::exec(
+                    QB::table('users')
+                    ->select('id')
+                );
+
+                foreach ($userIds as $key => $value) {
+                    DB::exec(
+                        QB::table('notifications')
+                        ->insert('user_id,proirity,content', $value->id, $proirity, $content)
+                    );
+                }
+            } else {
+                DB::exec(
+                    QB::table('notifications')
+                    ->insert('user_id,proirity,content', $id, $proirity, $content)
+                );
+            }
+
+            redirect('admin/inappropirate', [
+                'status' => 'Operation Success'
+            ]);
+        } catch (Exception $e) {
+            redirect('admin/inappropirate', [
+                'error' => [
+                    'Something went wrong',
+                    'Please try again'
+                ]
+            ]);
+        }
+    }
+
+    public function getInappropirateDelete($id) {
+        try {
+            $result = DB::exec(
+                QB::table('inappropirateapps')
+                ->delete()
+                ->where('app_id', $id)
+            );
+
+            if ($result->affectedRows > 0) {
+                redirect('admin/inappropirate', [
+                    'status' => 'Operation Success'
+                ]);
+            } else {
+                redirect('admin/inappropirate', [
+                    'error' => [
+                        'Something went wrong',
+                        'Please try again'
+                    ]
+                ]);
+            }
+        } catch (Exception $e) {
+            redirect('admin/inappropirate', [
+                'error' => [
+                    'Something went wrong',
+                    'Please try again'
+                ]
+            ]);
+        }
     }
 }
