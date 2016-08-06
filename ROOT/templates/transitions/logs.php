@@ -43,7 +43,7 @@ require __ROOT__.'templates/master/navbar.php';
                 <caption>Deposit Logs</caption>
                 <thead class="text-info">
                     <tr>
-                        <th>NO RECORDS</th>
+                        <th>Your deposit log is empty</th>
                     </tr>
                 </thead>
             </table>
@@ -83,7 +83,7 @@ require __ROOT__.'templates/master/navbar.php';
                     <caption>Withdraw Logs</caption>
                     <thead class="text-info">
                         <tr>
-                            <th>NO RECORDS</th>
+                            <th>Your withdraw log is empty</th>
                         </tr>
                     </thead>
                 </table>

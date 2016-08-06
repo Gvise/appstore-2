@@ -90,182 +90,53 @@ class Pages {
     public function getHome() {
         $data = static::load('Home', 'home');
 
+        $data['apps'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->where('applications.platform_id', session('currentPlatform')->id)
+            ->and()
+            ->where('categories.name', 'NOT LIKE', 'G_%')
+            ->orderByDesc('applications.rating')
+            ->limit(6)
+        );
+
         //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
-        //get from db
-        $data['games'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
+        $data['games'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->where('applications.platform_id', session('currentPlatform')->id)
+            ->and()
+            ->where('categories.name', 'LIKE', 'G_%')
+            ->orderByDesc('applications.rating')
+            ->limit(6)
+        );
 
     	render('home', $data);
     }
 
     public function getNewReleases() {
         $data = static::load('New Releases', 'newreleases');
-
-        //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
+        $date = date('Y-m-d', strtotime("-5 day"));
+        $data['apps'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->where('applications.platform_id', session('currentPlatform')->id)
+            ->and()
+            ->where('applications.updated_date','>',$date)
+            ->orderByDesc('applications.updated_date')
+        );
 
     	render('newreleases', $data);
     }
@@ -273,373 +144,64 @@ class Pages {
     public function getSearch() {
         $data = static::load('Search', 'Search Results');
         $data['keyword'] = Request::inputs('q');
+        $searchKeyword = strtolower(str_replace(' ', '_', $data['keyword']));
 
-        //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
+        $data['apps'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->where('applications.keyword', 'LIKE', '%'.$searchKeyword.'%')
+            ->and()
+            ->where('applications.platform_id', session('currentPlatform')->id)
+            ->orderByDesc('applications.rating')
+        );
 
         render('search', $data);
     }
 
     public function getWishlist() {
         $data = static::load('Wishlist', 'Wishlist');
-        //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
 
-        render('categories', $data);
+        $data['apps'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->innerJoin('wishlist')
+            ->on('applications.id', 'wishlist.app_id')
+            ->where('wishlist.user_id', session('user')->id)
+            ->and()
+            ->where('applications.platform_id', session('currentPlatform')->id)
+        );
+
+        render('wishlist', $data);
     }
 
     public function getCategories($id) {
-        //get category name from $id;
-        $catname = 'Category Name';
-        $data = static::load('Search', 'Category : ' . $catname);
-        $data['category'] = $catname;
-        //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
+        $categoryName = DB::query('select name from categories where id=?', [$id])[0]->name;
+        $categoryName = str_replace('G_','Game: ',$categoryName);
+        $data = static::load('Search', '' . $categoryName);
+        $data['category'] = $categoryName;
+
+        $data['apps'] = DB::exec(
+            QB::table('applications')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+            ->innerJoin('appdetails')
+            ->on('appdetails.app_id', 'applications.id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->where('categories.id', $id)
+            ->and()
+            ->where('applications.platform_id', session('currentPlatform')->id)
+            ->orderByDesc('appplications.rating')
+        );
 
         render('categories', $data);
-    }
-
-    public function getPopularApps() {
-        $data = static::load('Popular Apps', 'Popular Apps');
-
-        //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
-
-        render('newreleases', $data);
-    }
-
-    public function getPopularGames() {
-        $data = static::load('Popular Games', 'Popular Games');
-
-        //get from db
-        $data['apps'] = [
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Warlings',
-                'icon' => 'warlings.webp',
-                'stars' => 5,
-                'price' => 0,
-                'url' => ''
-            ],
-            [
-                'id' => 1,
-                'name' => 'Instagram',
-                'icon' => 'instagram.webp',
-                'stars' => 4,
-                'price' => 1000,
-                'url' => ''
-            ],
-        ];
-
-        render('newreleases', $data);
     }
 
     public function getUser() {
@@ -856,6 +418,8 @@ class Pages {
     }
 
     public function getWithdraw() {
+        Auth::check();
+        Auth::proirity(2);
         $data = static::load('Withdraw', 'Withdraw');
         render('transitions.withdraw', $data);
     }

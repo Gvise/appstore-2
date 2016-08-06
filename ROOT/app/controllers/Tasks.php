@@ -1,5 +1,28 @@
 <?php
 class Tasks {
+    public function getWishlistDelete($id) {
+        Auth::check();
+        try {
+            $result = DB::exec(
+                QB::table('wishlist')
+                ->delete()
+                ->where('app_id', $id)
+                ->and()
+                ->where('user_id', session('user')->id)
+            );
+
+            if ($result->affectedRows > 0 ) {
+                redirect('wishlist', [
+                    'status' => 'Operation success'
+                ]);
+            }
+        } catch (Exception $e) {
+            redirect('wishlist', [
+                'status' => 'Something went wrong'
+            ]);
+        }
+    }
+
     public function clearNotifications() {
         Auth::check();
 

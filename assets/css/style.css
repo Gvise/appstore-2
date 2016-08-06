@@ -460,3 +460,25 @@
     text-align: center;
     border-style: none;
 }
+
+.notifications-toggle.btn {
+    margin-top:5px;
+    border : 0;
+}
+
+.notifications-toggle.btn:hover {
+    color: blue;
+    background-color: white;
+}
+
+.normal {
+    background-color: rgb(19, 196, 226);
+}
+
+.warning {
+    background-color: rgb(23, 183, 210);
+}
+
+.important {
+    background-color: rgb(27, 167, 191);
+}

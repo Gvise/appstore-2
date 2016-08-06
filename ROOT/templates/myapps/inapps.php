@@ -36,13 +36,13 @@ require __ROOT__.'templates/master/navbar.php';
             <?php endforeach; ?>
             </tbody>
         <?php else: ?>
-            <thead>
+            <tbody>
                 <tr>
-                    <th>
-                        NO RECORDS
-                    </th>
+                    <td>
+                        You have no inappropirate application.
+                    </td>
                 </tr>
-            </thead>
+            </tbody>
         <?php endif; ?>
         </table>
     </div>

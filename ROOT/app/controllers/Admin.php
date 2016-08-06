@@ -189,11 +189,12 @@ class Admin {
     public function getConfirmTransition($id) {
         $info = DB::exec(
             QB::table('transactions')
-            ->select('amount, type')
+            ->select('amount, type, user_id')
             ->where('id', $id)
         )[0];
         $newamount = $info->amount;
         $type = $info->type;
+        $userId = $info->user_id;
 
         if ($newamount == null) {
             redirect(('admin/transitions'), [
@@ -220,7 +221,7 @@ class Admin {
                     $query = 'update profiles set balance = balance + ? where user_id = ?';
                     $result = DB::query($query, [
                         $newamount,
-                        session('user')->id
+                        $userId
                     ]);
 
                     if ($result->affectedRows < 0) {
@@ -249,11 +250,12 @@ class Admin {
     public function getDeleteTransition($id) {
         $info = DB::exec(
             QB::table('transactions')
-            ->select('type, amount')
+            ->select('type, amount, user_id')
             ->where('id', $id)
         )[0];
         $type = $info->type;
         $amount = $info->amount;
+        $userId = $info->user_id;
 
         if ($type == Config::get('transaction.deposit')) {
             $result = DB::exec(
@@ -272,7 +274,7 @@ class Admin {
         } else {
             DB::query('update profiles set balance = balance + ? where user_id = ?', [
                 $amount,
-                session('user')->id
+                $userId
             ]);
 
             $result = DB::exec(
@@ -394,7 +396,7 @@ class Admin {
 
             DB::exec(
                 QB::table('notifications')
-                ->insert('user_id ,proirity,content', $userId, 1, $content)
+                ->insert('user_id ,proirity,content', $userId, 2, $content)
             );
 
             redirect('admin/inappropirate', [

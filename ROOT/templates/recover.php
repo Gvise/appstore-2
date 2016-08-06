@@ -1,4 +1,6 @@
-<?php render('master.head', compact('title', 'subtitle')) ?>
+<?php
+require __ROOT__.'templates/master/head.php';
+?>
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -42,4 +44,6 @@
         </div>
     </div>
 </div>
-<?php render('master.foot')?>
+<?php
+require __ROOT__.'templates/master/foot.php';
+?>

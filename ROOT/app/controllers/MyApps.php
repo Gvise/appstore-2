@@ -73,30 +73,24 @@ class MyApps {
     }
 
     public function getPurchased() {
-        Auth::proirity(2);
         $data = Pages::load('Purchased', 'My Apps');
 
-        // $data['apps'] = DB::exec(
-        //     QB::table('applications')
-        //     ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price, categories.name as categoryName')
-        //     ->innerJoin('appdetails')
-        //     ->on('appdetails.app_id', 'applications.id')
-        //     ->innerJoin('categories')
-        //     ->on('applications.category_id', 'categories.id')
-        //     ->where('applications.user_id', session('user')->id)
-        // );
-
-        //get from database;
-        // $data['apps'] = [
-        //     [
-        //         'id' => 1,
-        //         'name' => 'Warlings',
-        //         'icon' => 'warlings.webp',
-        //         'stars' => 5,
-        //         'price' => 0,
-        //         'url' => ''
-        //     ]
-        // ];
+        $data['apps'] = DB::exec(
+            QB::table('purchases')
+            ->select('applications.id, appdetails.name, profiles.name as developerName, categories.name as categoryName, platforms.name as platformName, purchases.price, purchases.date')
+            ->innerJoin('appdetails')
+            ->on('purchases.app_id', 'appdetails.app_id')
+            ->innerJoin('profiles')
+            ->on('purchases.user_id', 'profiles.user_id')
+            ->innerJoin('applications')
+            ->on('applications.id', 'purchases.app_id')
+            ->innerJoin('categories')
+            ->on('applications.category_id', 'categories.id')
+            ->innerJoin('platforms')
+            ->on('applications.platform_id', 'platforms.id')
+            ->where('purchases.user_id', session('user')->id)
+            ->orderByDesc('date')
+        );
 
         render('myapps.purchased', $data);
     }
@@ -108,12 +102,14 @@ class MyApps {
 
         $data['apps'] = DB::exec(
             QB::table('applications')
-            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price, categories.name as categoryName')
+            ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
             ->innerJoin('appdetails')
             ->on('appdetails.app_id', 'applications.id')
             ->innerJoin('categories')
             ->on('applications.category_id', 'categories.id')
             ->where('applications.user_id', session('user')->id)
+            ->and()
+            ->where('applications.platform_id', session('currentPlatform')->id)
         );
 
         render('myapps.published', $data);
@@ -190,21 +186,22 @@ class MyApps {
             ->select('applications.id, appdetails.name as appName, platforms.name as platformName')
             ->innerJoin('appdetails')->on('appdetails.app_id', 'applications.id')
             ->innerJoin('platforms')->on('applications.platform_id', 'platforms.id')
+            ->where('applications.user_id', session('user')->id)
         );
 
-        foreach ($apps as $key => $value) {
-            $apps[$key]->reportCount = DB::exec(
-                QB::table('inappropirateapps')
-                ->select('count(*) as count')
-                ->where('app_id', $value->id)
-            )[0]->count;
-
-            if ($apps[$key]->reportCount <= 0) {
-                unset($apps[$key]);
-            }
-        }
-
         if (!empty($apps)) {
+            foreach ($apps as $key => $value) {
+                $apps[$key]->reportCount = DB::exec(
+                    QB::table('inappropirateapps')
+                    ->select('count(*) as count')
+                    ->where('app_id', $value->id)
+                )[0]->count;
+
+                if ($apps[$key]->reportCount <= 0) {
+                    unset($apps[$key]);
+                }
+            }
+
             $data['apps'] = $apps;
         }
 
@@ -260,13 +257,12 @@ class MyApps {
         $extra = inputs('extra');
         $size = $_FILES['app']['size'];
 
+        $keyword = strtolower(str_replace(' ', '_', $name));
+
         $prefix = session('user')->id . date('ymdhms');
         $icon = $prefix.$_FILES['icon']['name'];
-        $app = $prefix.$_FILES['app']['name'];
+        $app = $prefix.$keyword.$version. '.' .pathinfo($_FILES['app']['name'], PATHINFO_EXTENSION);
         $screenshots = $_FILES['screenshots']['name'];
-
-
-        $keyword = strtolower(str_replace(' ', '_', $name));
         $result = DB::exec(
             QB::table('applications')
             ->insert('user_id, category_id, platform_id, keyword, rating, updated_date, icon',

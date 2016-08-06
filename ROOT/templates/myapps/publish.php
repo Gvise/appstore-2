@@ -66,7 +66,7 @@ require __ROOT__.'templates/master/navbar.php';
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="extra" class="control-label">Extra Details</label>
-                    <textarea name="extra" class="unround form-control" value="" placeholder="Extra Details"></textarea>
+                    <textarea name="extra" class="unround form-control" value="" placeholder="Extra Details">NO EXTRA</textarea>
                 </div>
                 <div class="form-group">
                     <label for="icon">Icon</label>

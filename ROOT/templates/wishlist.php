@@ -12,6 +12,7 @@ require __ROOT__.'templates/master/navbar.php';
             <div class="panel-body">
             <?php foreach ($apps as $key => $value): ?>
                 <div class="app-card">
+                    <a href=<?= url('wishlist/delete/' . $value->id); ?> data-toggle="tooltips" data-placement="left" title="Remove from wishlist" class="app-card-del unround btn btn-xs btn-default glyphicon glyphicon-remove"></a>
                     <a href=<?=url('app/'.$value->id)?>>
                         <img src=<?= assets('storage/icons/' . $value->icon) ?> alt="..." class="img-thumbnail unround">
                     </a>
@@ -34,7 +35,7 @@ require __ROOT__.'templates/master/navbar.php';
                 <tbody>
                     <tr>
                         <td>
-                            There is no new released applications.
+                            There is no application in your wishlist
                         </td>
                     </tr>
                 </tbody>

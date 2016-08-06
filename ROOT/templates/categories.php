@@ -7,30 +7,40 @@ require __ROOT__.'templates/master/navbar.php';
 
 <div class="contents">
     <div class="container">
-        <div class="panel panel-default unround app-feed-panel">
-            <div class="panel-body">
-            <?php foreach ($apps as $key => $value): ?>
-                <div class="app-card">
-                    <a href=<?=url('app/'.$value['id'])?>>
-
-                        <img src=<?= assets('assets/images/app-icons/' . $value['icon']) ?> alt="..." class="img-thumbnail unround">
-                    </a>
-                    <p><a class="app-card-link" href=<?=url('app/'.$value['id'])?>><?=$value['name'] ?></a></p>
-                    <div>
+        <?php if (isset($apps)): ?>
+            <div class="panel panel-default unround app-feed-panel">
+                <div class="panel-body">
+                <?php foreach ($apps as $key => $value): ?>
+                    <div class="app-card">
+                        <a href=<?=url('app/'.$value->id)?>>
+                            <img src=<?= assets('storage/icons/' . $value->icon) ?> alt="..." class="img-thumbnail unround">
+                        </a>
+                        <p><a class="app-card-link" href=<?=url('app/'.$value->id)?>><?=$value->name ?></a></p>
                         <div>
-                        <?php for ($i=0; $i < $value['stars']; $i++): ?>
-                            <i class="glyphicon glyphicon-star"></i>
-                        <?php endfor; ?>
-                        <?php for ($i=0; $i < 5-$value['stars']; $i++): ?>
-                            <i class="glyphicon glyphicon-star-empty"></i>
-                        <?php endfor; ?>
+                            <div>
+                                <i class="glyphicon glyphicon-star"></i> <?= $value->rating ?>
+                                <span class="pull-right"><?=str_replace('G_', '', $value->categoryName)?></span>
+                            </div>
+                            <hr class="custom-divider">
+                            <a class="text-success" href=<?=url('app/'.$value->id)?>><small><?=$value->price == 0 ? 'Free App' : $value->price.' MMK'?></small></a>
                         </div>
-                        <a class="text-success" href=<?=url('app/'.$value['id'])?>><small><?=$value['price'] == 0 ? 'Free' : $value['price'].' MMK'?></small></a>
                     </div>
+                <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
             </div>
-        </div>
+        <?php else: ?>
+            <div class="col-md-6 col-md-offset-3">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                There is no applications in this category
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

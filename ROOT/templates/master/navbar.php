@@ -16,7 +16,7 @@
         </ul>
 
         <div class="navbar-right" style="margin-right:inherit">
-            <form action="" class="navbar-form" method="get" style="display:inline-block">
+            <form action=<?= url('search')?> class="navbar-form" method="get" style="display:inline-block">
                 <div class="form-group">
                   <input type="text" class="form-control unround" placeholder="Search an Application" name="q">
                   <button type="submit" class="unround btn btn-default">
@@ -39,20 +39,20 @@
     <?php if (session('user') != null): ?>
         <div class="notifications hidden">
             <p class="text-info notifications-toggle">Notifications <a class="pull-right btn btn-xs btn-default">Close</a></p>
-            <hr class="custom-divider">
+
             <ul class="nav">
         <?php if (isset($notifications)): ?>
             <?php foreach ($notifications as $key => $value) : ?>
                 <?php if ($value->proirity == 1): ?>
-                    <li class="bg-danger" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
+                    <li class="important" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
                 <?php elseif ($value->proirity == 2): ?>
-                    <li class="bg-warning" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
+                    <li class="warning" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
                 <?php else: ?>
-                    <li style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
+                    <li class="normal" style="margin:0 5px 1px 5px"><a href="#"><?=$value->content ?></a></li>
                 <?php endif ?>
             <?php endforeach; ?>
             </ul>
-            <div style="position:absolute;bottom:0;width:100%">
+            <div style="position:absolute;bottom:5px;left:7px;width:97%">
                 <a class="btn btn-default btn-xs unround" style="width:inherit;" href=<?= url('notifications/clear') ?>>Clear All</a>
             </div>
         <?php endif; ?>

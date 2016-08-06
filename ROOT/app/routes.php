@@ -1,12 +1,7 @@
 <?php
 get('/zz', function() {
-	try {
-		echo $foo;
-	} catch (Exception $e) {
-		echo 'df';
-		echo $e->getMessage();
-	}
-
+	// dd(date('Y-m-d', strtotime("-5 day")));
+	// $ext = pathinfo('zzz/ddd.dzf', PATHINFO_EXTENSION);
 });
 //Block Pages
 {
@@ -76,6 +71,8 @@ get('/zz', function() {
 
 //Block Tasks
 {
+	get('wishlist/delete/[:id]', 'Tasks@getWishlistDelete');
+
 	post('admin/addcategory', 'Tasks@postAdminAddCategory');
 	get('admin/delcategory/[:id]', 'Tasks@getAdminDelCategory');
 	post('admin/addplatform', 'Tasks@postAdminAddPlatform');

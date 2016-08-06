@@ -189,5 +189,6 @@ class Query {
 
     public function limit($limit = 1) {
         $this->queryString .= ' limit ' . $limit;
+        return $this;
     }
 }

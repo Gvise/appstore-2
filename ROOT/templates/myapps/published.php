@@ -40,15 +40,17 @@ require __ROOT__.'templates/master/navbar.php';
             </div>
         </div>
     <?php else: ?>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        NO RECORDS
-                    </th>
-                </tr>
-            </thead>
-        </table>
+        <div class="com-md-6 col-md-offset-3">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>
+                            There is no application in your published list
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     <?php endif; ?>
     </div>
 </div>
