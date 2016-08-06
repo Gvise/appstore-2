@@ -342,7 +342,7 @@
 }
 
 .custom-dialog {
-    z-index: 1033;
+    z-index: 3033;
     position:fixed;
     top:50px;
     left:550px;

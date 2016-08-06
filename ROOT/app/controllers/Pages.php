@@ -29,14 +29,14 @@ class Pages {
                     ->where('name', 'LIKE', 'G_%')
             );
 
-            $notifications = DB::exec(
-                QB::table('notifications')
-                    ->select()
-                    ->where('user_id', session('user')->id)
-                    ->orderBy('proirity')
-            );
-
             if (session('user') != null) {
+                $notifications = DB::exec(
+                    QB::table('notifications')
+                        ->select()
+                        ->where('user_id', session('user')->id)
+                        ->orderBy('proirity')
+                );
+
                 $wishlistCount = DB::exec(
                     QB::table('wishlist')
                         ->select('count(*) as count')
@@ -85,6 +85,82 @@ class Pages {
         }
 
         redirect('');
+    }
+
+    public function getApp($id) {
+        $data = Pages::load('App Name', 'App Name');
+
+        $data['app'] = DB::exec(
+            QB::table('applications')
+            ->select(
+                'applications.id, appdetails.name, applications.icon, applications.rating, '.
+                'appdetails.price, categories.name as category, platforms.name as platform, '.
+                'appdetails.extra, appdetails.details, appdetails.size, profiles.name as developer, '.
+                'appdetails.version, appdetails.downloads, appdetails.path as file, categories.id as categoryId, '.
+                'users.id as developerId, applications.updated_date as date, users.email as mail, profiles.address'
+            )
+            ->innerJoin('appdetails')->on('applications.id', 'appdetails.app_id')
+            ->innerJoin('users')->on('applications.user_id', 'users.id')
+            ->innerJoin('profiles')->on('applications.user_id', 'profiles.user_id')
+            ->innerJoin('categories')->on('applications.category_id', 'categories.id')
+            ->innerJoin('platforms')->on('applications.platform_id', 'platforms.id')
+            ->where('applications.id', $id)
+        )[0];
+
+        if ($data['app'] != null) {
+            if ($data['app']->extra == 'NO EXTRA') {
+                unset($data['app']->extra);
+            }
+
+            if (session('user') != null) {
+                $data['reportedByMe'] = DB::exec(
+                    QB::table('inappropirateapps')
+                    ->select('count(*) as count')
+                    ->where('user_id', session('user')->id)
+                    ->and()
+                    ->where('app_id', $data['app']->id)
+                )[0]->count != 0 ? true : false;
+
+                $data['alreadyInWL'] = DB::exec(
+                    QB::table('wishlist')
+                    ->select('count(*) as count')
+                    ->where('user_id', session('user')->id)
+                    ->and()
+                    ->where('app_id', $data['app']->id)
+                )[0]->count != 0 ? true : false;
+
+                $data['isOwn'] =DB::exec(
+                    QB::table('purchases')
+                    ->select('count(*) as count')
+                    ->where('user_id', session('user')->id)
+                    ->and()
+                    ->where('app_id', $data['app']->id)
+                )[0]->count != 0 ? true : false;
+            }
+
+            $data['appScreenshots'] = DB::exec(
+                QB::table('screenshots')
+                ->select('path')
+                ->where('app_id', $data['app']->id)
+            );
+
+            $data['similarApps'] = DB::exec(
+                QB::table('applications')
+                ->select('applications.id, appdetails.name, applications.icon, applications.rating, appdetails.price,categories.name as categoryName')
+                ->innerJoin('appdetails')
+                ->on('appdetails.app_id', 'applications.id')
+                ->innerJoin('categories')
+                ->on('applications.category_id', 'categories.id')
+                ->where('applications.platform_id', session('currentPlatform')->id)
+                ->and()
+                ->where('categories.id', $data['app']->categoryId)
+                ->and()
+                ->where('applications.id', '<>', $id)
+                ->orderByDesc('applications.rating')
+                ->limit(4)
+            );
+        }
+        render('apps', $data);
     }
 
     public function getHome() {
@@ -198,7 +274,7 @@ class Pages {
             ->where('categories.id', $id)
             ->and()
             ->where('applications.platform_id', session('currentPlatform')->id)
-            ->orderByDesc('appplications.rating')
+            ->orderByDesc('applications.rating')
         );
 
         render('categories', $data);

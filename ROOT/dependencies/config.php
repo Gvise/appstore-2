@@ -1,6 +1,6 @@
 <?php
 return [
-    'title' => 'Cunt',
+    'title' => 'Gavati',
     'basepath' => 'appstore/',
     'views' => __ROOT__.'templates/',
     'db' => [

@@ -500,7 +500,8 @@ class Admin {
                 'status' => 'Operation Success'
             ]);
         } catch (Exception $e) {
-            redirect('admin/inappropirate', [
+            dd($e->getMessage());
+            redirect('app' . $id, [
                 'error' => [
                     'Something went wrong',
                     'Please try again'

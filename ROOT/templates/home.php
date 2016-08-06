@@ -7,12 +7,12 @@ require __ROOT__.'templates/master/navbar.php';
 
 <div class="contents">
     <div class="container">
+        <?php if (isset($apps)): ?>
         <div class="panel panel-default unround app-feed-panel">
             <div class="app-feed-heading panel-heading">
                 <a href="#" class="category-name">Popular Apps</a>
             </div>
             <div class="panel-body">
-            <?php if (isset($apps)): ?>
                 <div class="panel panel-default unround app-feed-panel">
                     <div class="panel-body">
                     <?php foreach ($apps as $key => $value): ?>
@@ -33,16 +33,16 @@ require __ROOT__.'templates/master/navbar.php';
                     <?php endforeach; ?>
                     </div>
                 </div>
-            <?php endif; ?>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (isset($games)): ?>
         <div class="panel panel-default unround app-feed-panel">
             <div class="app-feed-heading panel-heading">
                 <a href="#" class="category-name">Popular Games</a>
             </div>
             <div class="panel-body">
-            <?php if (isset($games)): ?>
                 <div class="panel panel-default unround app-feed-panel">
                     <div class="panel-body">
                     <?php foreach ($games as $key => $value): ?>
@@ -63,9 +63,9 @@ require __ROOT__.'templates/master/navbar.php';
                     <?php endforeach; ?>
                     </div>
                 </div>
-            <?php endif; ?>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 

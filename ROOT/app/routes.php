@@ -28,6 +28,13 @@ get('/zz', function() {
 
 	get('logs', 'Pages@getLogs');
 	get('logs/report/[:id]', 'Pages@reportLog');
+
+	get('app/[:id]', 'Pages@getApp');
+	get('app/report/[:id]', 'Tasks@getAppReport');
+	get('wishlist/add/[:id]', 'Tasks@getAddToWishlist');
+	get('app/rate/[:id]/[:star]', 'Tasks@getAppRate');
+	get('app/buy/[:id]', 'Tasks@getAppBuy');
+	get('app/download/[:id]', 'Tasks@getAppDownload');
 }
 
 // Block MyApps

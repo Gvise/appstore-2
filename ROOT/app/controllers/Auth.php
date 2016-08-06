@@ -10,7 +10,7 @@ class Auth {
         }
 
         if(session('user') == null) {
-            redirect('', [
+            redirect('join', [
                 'status' => 'Please Log In !'
             ]);
             exit();

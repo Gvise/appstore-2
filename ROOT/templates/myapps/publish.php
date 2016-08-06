@@ -49,8 +49,9 @@ require __ROOT__.'templates/master/navbar.php';
                 </div>
                 <div class="form-group col-md-7">
                     <label for="price" class="control-label">Price</label>
+                    <span class="label label-info">Price 0 MMK is for free applications.</span>
                     <div class="input-group">
-                        <input type="text" name="price" class="unround form-control" value="" placeholder="Price">
+                        <input type="text" name="price" class="unround form-control" value="0" placeholder="Price">
                         <span class="input-group-addon">MMK</span>
                     </div>
                 </div>
