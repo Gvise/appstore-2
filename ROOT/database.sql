@@ -167,44 +167,6 @@ ON DELETE CASCADE
 ON UPDATE NO ACTION)
 ;
 
-DROP TABLE IF EXISTS `appstore`.`feedbacks` ;
-
-CREATE TABLE IF NOT EXISTS `appstore`.`feedbacks` (
-`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-`user_id` INT UNSIGNED NOT NULL,
-`app_id` INT UNSIGNED NOT NULL,
-`content` VARCHAR(255) NOT NULL,
-`date` DATETIME NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`user_id`)
-REFERENCES `appstore`.`users` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION,
-FOREIGN KEY (`app_id`)
-REFERENCES `appstore`.`applications` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION)
-;
-
-DROP TABLE IF EXISTS `appstore`.`replys` ;
-
-CREATE TABLE IF NOT EXISTS `appstore`.`replys` (
-`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-`feedback_id` INT UNSIGNED NOT NULL,
-`user_id` INT UNSIGNED NOT NULL,
-`content` VARCHAR(255) NOT NULL,
-`date` DATETIME NOT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`user_id`)
-REFERENCES `appstore`.`users` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION,
-FOREIGN KEY (`feedback_id`)
-REFERENCES `appstore`.`feedbacks` (`id`)
-ON DELETE CASCADE
-ON UPDATE NO ACTION)
-;
-
 DROP TABLE IF EXISTS `appstore`.`screenshots` ;
 
 CREATE TABLE IF NOT EXISTS `appstore`.`screenshots` (
@@ -229,6 +191,7 @@ CREATE TABLE IF NOT EXISTS `appstore`.`appdetails` (
 `downloads` INT NOT NULL,
 `details` LONGTEXT NOT NULL,
 `extra` LONGTEXT NOT NULL,
+`path` VARCHAR(100) NOT NULL,
 PRIMARY KEY (`app_id`),
 FOREIGN KEY (`app_id`)
 REFERENCES `appstore`.`applications` (`id`)

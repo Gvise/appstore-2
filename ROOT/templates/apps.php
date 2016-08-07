@@ -161,7 +161,7 @@ require __ROOT__.'templates/master/navbar.php';
             </div>
             <?php if (isset($similarApps)): ?>
             <hr>
-            <h4>More from <?= $app->category ?></h4>
+            <h4>More from <?= str_replace('G_', 'Game: ', $app->category) ?></h4>
             <div class="panel panel-default unround app-feed-panel">
                 <div class="panel-body">
                     <div class="panel panel-default unround app-feed-panel">
