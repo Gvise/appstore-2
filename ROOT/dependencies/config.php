@@ -19,7 +19,8 @@ return [
         'deposit' => 1,
         'withdraw' => 2
     ],
-
+    'adminId' => 4,
+    'percent' => 0.05,
     'iconpath' => 'storage/icons/',
     'sspath' => 'storage/screenshots/',
     'apppath' => 'storage/applications/'

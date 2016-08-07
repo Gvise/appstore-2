@@ -66,9 +66,16 @@ class Tasks {
                         $buyerId
                     ]);
 
+                    $price2Seller = $application->price * (1 - Config::get('percent'));
+                    $price2Admin = $application->price - $price2Seller;
                     DB::query('update profiles set balance = balance + ? where user_id = ?', [
-                        $application->price,
+                        $price2Seller,
                         $application->sellerId
+                    ]);
+
+                    DB::query('update profiles set balance = balance + ? where user_id = ?', [
+                        $price2Admin,
+                        Config::get('adminId')
                     ]);
 
                     DB::exec(

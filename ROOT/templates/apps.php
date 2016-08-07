@@ -39,11 +39,9 @@ require __ROOT__.'templates/master/navbar.php';
                         <?php endif; ?>
 
                         <?php if (session('user') != null): ?>
-                            <?php if (session('user')->id == $app->developerId || session('user')->type == 3): ?>
+                            <?php if (session('user')->id == $app->developerId): ?>
                                 <?php if (session('user')->type == 3): ?>
                                     <a href=<?= url('app/delete/'. $app->id) ?> class="btn btn-xs unround btn-danger" data-toggle="tooltips" data-placement="left" title="Remove this application!"><i class="glyphicon glyphicon glyphicon-trash"></i></a>
-                                <?php else: ?>
-                                    <a href=<?= url('myapps/delete/'. $app->id) ?> class="btn btn-xs unround btn-danger" data-toggle="tooltips" data-placement="left" title="Remove this application!"><i class="glyphicon glyphicon glyphicon-trash"></i></a>
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
